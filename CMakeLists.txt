@@ -11,8 +11,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
-find_package(Protobuf CONFIG REQUIRED)
-find_package(gRPC CONFIG REQUIRED)
+if(WIN32)
+    # Windows: dependencies installed through vcpkg
+    find_package(Protobuf CONFIG REQUIRED)
+    find_package(gRPC CONFIG REQUIRED)
+else()
+    # Linux: dependencies installed through APT
+    find_package(Protobuf REQUIRED)
+    find_package(gRPC CONFIG REQUIRED)
+endif()
 
 set(PROTO_GENERATED_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/src/generated
@@ -22,9 +29,22 @@ set(PROTO_GENERATOR
         ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_proto.py
 )
 
-set(RENDER_PROTO
-        ${CMAKE_CURRENT_SOURCE_DIR}/../Protocols/Proto/render.proto
-)
+if(WIN32)
+	set(PROTOCOLS_DIR
+    		${CMAKE_CURRENT_SOURCE_DIR}/../Protocols/Proto
+	)
+	set(RENDER_PROTO
+		${PROTOCOLS_DIR}/render.proto
+	)
+else()
+	set(PROTOCOLS_DIR
+    		${CMAKE_CURRENT_SOURCE_DIR}/../Weckest-Protocols/Proto
+	)
+	
+	set(RENDER_PROTO
+		${PROTOCOLS_DIR}/render.proto
+	)
+endif()
 
 set(RENDER_PROTO_SRC
         ${CMAKE_CURRENT_BINARY_DIR}/render.pb.cc
@@ -42,7 +62,7 @@ add_custom_command(
         ${RENDER_PROTO_HDR}
 
         COMMAND protobuf::protoc
-        --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../Protocols/Proto
+        --proto_path=${PROTOCOLS_DIR}
         --cpp_out=${CMAKE_CURRENT_BINARY_DIR}
         --grpc_out=${CMAKE_CURRENT_BINARY_DIR}
         --plugin=protoc-gen-grpc=$<TARGET_FILE:gRPC::grpc_cpp_plugin>
@@ -79,7 +99,7 @@ add_custom_target(generate_proto ALL
 add_executable(RoomEngine
         src/main.cpp
         src/network/TCPConnection.cpp
-        src/network/TcpServer.cpp
+        src/network/TCPServer.cpp
         src/generated/hardware.pb.c
         src/services/ModuleService.cpp
         tools/nanopb-0.4.9.2-windows-x86/pb_common.c
