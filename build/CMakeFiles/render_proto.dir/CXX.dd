@@ -1,0 +1,5 @@
+ninja_dyndep_version = 1.0
+build CMakeFiles/render_proto.dir/render.pb.cc.o: dyndep
+
+build CMakeFiles/render_proto.dir/render.grpc.pb.cc.o: dyndep
+

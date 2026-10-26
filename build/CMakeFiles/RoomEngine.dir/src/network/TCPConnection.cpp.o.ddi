@@ -1,0 +1,11 @@
+{
+"rules": [
+{
+"primary-output": "CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o",
+"requires": [
+]
+}
+],
+"version": 0,
+"revision": 0
+}

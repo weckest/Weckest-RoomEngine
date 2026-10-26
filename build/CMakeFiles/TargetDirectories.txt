@@ -1,0 +1,5 @@
+/home/weckest/Documents/Weckest/Weckest-RoomEngine/build/CMakeFiles/render_proto.dir
+/home/weckest/Documents/Weckest/Weckest-RoomEngine/build/CMakeFiles/generate_proto.dir
+/home/weckest/Documents/Weckest/Weckest-RoomEngine/build/CMakeFiles/RoomEngine.dir
+/home/weckest/Documents/Weckest/Weckest-RoomEngine/build/CMakeFiles/edit_cache.dir
+/home/weckest/Documents/Weckest/Weckest-RoomEngine/build/CMakeFiles/rebuild_cache.dir

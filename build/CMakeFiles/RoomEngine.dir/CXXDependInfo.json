@@ -1,0 +1,133 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/build",
+	"dir-cur-src" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine",
+	"dir-top-bld" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/build",
+	"dir-top-src" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/home/weckest/Documents/Weckest/Weckest-RoomEngine/src",
+		"/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/generated",
+		"/home/weckest/Documents/Weckest/Weckest-RoomEngine/tools/nanopb-0.4.9.2-windows-x86",
+		"."
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/build/CMakeFiles/RoomEngine.dir",
+	"sources" : 
+	{
+		"CMakeFiles/RoomEngine.dir/src/ecs/World.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/World.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/managers/ActionManager.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/ActionManager.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/managers/ModuleManager.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/ModuleManager.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/managers/RoomEventManager.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/RoomEventManager.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/managers/SystemManager.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/SystemManager.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/systems/ColorSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/ColorSystem.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/systems/CombatSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/CombatSystem.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/systems/HealthSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/HealthSystem.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/systems/LightSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/LightSystem.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/systems/MovementSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/MovementSystem.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/systems/RenderSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/RenderSystem.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventCooldownSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/RoomEventCooldownSystem.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/RoomEventSystem.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/ecs/systems/WaitSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/WaitSystem.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/engine/RoomEngine.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/engine/RoomEngine.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/main.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/main.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/network/TCPServer.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPServer.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/services/ModuleService.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/services/ModuleService.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/services/visuals/RenderServiceClient.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/services/visuals/RenderServiceClient.cpp"
+		},
+		"CMakeFiles/RoomEngine.dir/src/utils/Vector3D.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/utils/Vector3D.cpp"
+		}
+	}
+}
