@@ -14,7 +14,7 @@
 #include "managers/ModuleManager.h"
 #include "managers/RoomEventManager.h"
 #include "managers/SystemManager.h"
-#include "network/TcpServer.h"
+#include "network/TCPServer.h"
 #include "services/visuals/RenderServiceClient.h"
 #include "systems/ColorSystem.h"
 #include "systems/CombatSystem.h"
@@ -58,8 +58,8 @@ public:
 
     void Update(float dt) {
         lightSystem.update(entities);
-        roomEventSystem.update(*this, dt);
         roomEventCooldownSystem.update(*this);
+        roomEventSystem.update(*this, dt);
 
         movementSystem.update(*this, dt);
         healthSystem.update(*this);
