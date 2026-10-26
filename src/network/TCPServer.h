@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "IModuleSender.h"
-#include "TcpConnection.h"
+#include "TCPConnection.h"
 #include "services/ModuleService.h"
 
 class TcpServer : public IModuleSender
