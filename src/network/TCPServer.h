@@ -2,6 +2,7 @@
 // Created by Weckest on 2026-09-23.
 //
 
+
 #pragma once
 
 #include <cstdint>
@@ -16,7 +17,7 @@ class TcpServer : public IModuleSender
 {
 public:
     explicit TcpServer(int port);
-    ~TcpServer();
+    ~TcpServer() override;
 
     TcpServer(const TcpServer&) = delete;
     TcpServer& operator=(const TcpServer&) = delete;
@@ -25,8 +26,7 @@ public:
 
     /*
      * Processes networking for all connected modules.
-     *
-     * This should be called repeatedly by RoomEngine.
+     * Call repeatedly from RoomEngine.
      */
     void Update();
 
@@ -40,23 +40,28 @@ public:
     /*
      * Sends a protobuf message to a specific TCP connection.
      */
-    bool Send(int clientSocket, const ModuleMessage& message) override;
+    bool Send(
+        TcpSocket clientSocket,
+        const ModuleMessage& message
+    ) override;
 
 private:
     bool SetupServerSocket();
 
     void AcceptNewConnections();
-
     void ProcessConnections();
-
     void RemoveDisconnectedConnections();
 
     int port;
-    int serverSocket;
-
+    TcpSocket serverSocket;
     bool running;
+
+#ifdef _WIN32
+    bool winsockInitialized = false;
+#endif
 
     std::vector<std::unique_ptr<TcpConnection>> connections;
 
     ModuleService moduleService;
 };
+
