@@ -2,41 +2,40 @@
 // Created by Weckest on 2026-09-23.
 //
 
+
 #include "TCPServer.h"
 
 #include <iostream>
-#include <vector>
-#include <chrono>
-
-#include "hardware.pb.h"
-#include "pb_decode.h"
-#include "pb_encode.h"
-#include "services/ModuleService.h"
+#include <algorithm>
+#include <cstring>
 
 #ifdef _WIN32
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
 
     #include <winsock2.h>
     #include <ws2tcpip.h>
-
 #else
-
-    #include <arpa/inet.h>
+    #include <cerrno>
+    #include <fcntl.h>
     #include <netinet/in.h>
     #include <sys/socket.h>
+    #include <arpa/inet.h>
     #include <unistd.h>
-
 #endif
 
-
 TcpServer::TcpServer(int port)
-    : port(port), serverSocket(-1), running(false), moduleService(*this)
-{}
+    : port(port),
+      serverSocket(INVALID_TCP_SOCKET),
+      running(false),
+      moduleService(*this)
+{
+}
 
 TcpServer::~TcpServer()
 {
     Stop();
-
-    WSACleanup();
 }
 
 bool TcpServer::Start()
@@ -46,127 +45,348 @@ bool TcpServer::Start()
         return true;
     }
 
-    /*
-     * Initialize Winsock.
-     */
+#ifdef _WIN32
     WSADATA wsaData{};
 
-    int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
-
-    if (result != 0)
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
     {
-        std::cerr << "WSAStartup failed: " << result << '\n';
-
+        std::cerr << "WSAStartup failed." << std::endl;
         return false;
     }
 
+    winsockInitialized = true;
+#endif
+
     if (!SetupServerSocket())
     {
-        WSACleanup();
+        std::cerr << "Failed to set up TCP server socket." << std::endl;
+
+#ifdef _WIN32
+        if (winsockInitialized)
+        {
+            WSACleanup();
+            winsockInitialized = false;
+        }
+#endif
+
         return false;
     }
 
     running = true;
 
-    std::cout << "RoomEngine listening on port " << port << '\n';
+    std::cout << "TCP server listening on port "
+              << port << std::endl;
 
     return true;
 }
 
-void TcpServer::Update()
-{
-    if (!running) return;
-
-    AcceptNewConnections();
-
-    ProcessConnections();
-
-    RemoveDisconnectedConnections();
-}
-
 void TcpServer::Stop()
 {
-    if (!running) return;
-
-    std::cout << "\nStopping RoomEngine TCP server...\n";
-
     running = false;
-
-    std::cout << "Closing " << connections.size() << " client connection(s)...\n";
 
     for (auto& connection : connections)
     {
-        if (connection->IsConnected())
+        if (connection)
         {
-            std::cout << "Closing client socket: " << connection->GetSocket() << '\n';
-
             connection->Close();
         }
     }
 
     connections.clear();
 
-    if (serverSocket != -1)
+    if (serverSocket != INVALID_TCP_SOCKET)
     {
-        std::cout << "Closing listening socket...\n";
+#ifdef _WIN32
+        shutdown(serverSocket, SD_BOTH);
+        closesocket(serverSocket);
+#else
+        shutdown(serverSocket, SHUT_RDWR);
+        close(serverSocket);
+#endif
 
-        shutdown(static_cast<SOCKET>(serverSocket), SD_BOTH);
-
-        closesocket(static_cast<SOCKET>(serverSocket));
-
-        serverSocket = -1;
+        serverSocket = INVALID_TCP_SOCKET;
     }
 
-    std::cout << "All TCP connections closed.\n";
+#ifdef _WIN32
+    if (winsockInitialized)
+    {
+        WSACleanup();
+        winsockInitialized = false;
+    }
+#endif
 }
 
-bool TcpServer::IsRunning() const {
+bool TcpServer::IsRunning() const
+{
     return running;
 }
 
-bool TcpServer::Send(int clientSocket, const ModuleMessage &message)
+void TcpServer::Update()
 {
-    // Encode the protobuf message
-    uint8_t buffer[128];
-
-    pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
-
-    if (!pb_encode(&stream, ModuleMessage_fields, &message))
+    if (!running)
     {
-        std::cerr << "Failed to encode message: " << PB_GET_ERROR(&stream) << '\n';
+        return;
+    }
+
+    AcceptNewConnections();
+    ProcessConnections();
+    RemoveDisconnectedConnections();
+}
+
+bool TcpServer::Send(
+    TcpSocket clientSocket,
+    const ModuleMessage& message)
+{
+    const auto it = std::find_if(
+        connections.begin(),
+        connections.end(),
+        [clientSocket](const std::unique_ptr<TcpConnection>& connection)
+        {
+            return connection &&
+                   connection->GetSocket() == clientSocket;
+        });
+
+    if (it == connections.end())
+    {
+        std::cerr << "Cannot send message: client connection not found."
+                  << std::endl;
         return false;
     }
 
-    uint32_t messageSize = static_cast<uint32_t>(stream.bytes_written);
+    return (*it)->Send(message);
+}
 
-    // Create 4-byte big-endian size header
-    uint8_t header[4]
+bool TcpServer::SetupServerSocket()
+{
+    serverSocket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+    if (serverSocket == INVALID_TCP_SOCKET)
     {
-        static_cast<uint8_t>((messageSize >> 24) & 0xFF),
-        static_cast<uint8_t>((messageSize >> 16) & 0xFF),
-        static_cast<uint8_t>((messageSize >> 8) & 0xFF),
-        static_cast<uint8_t>(messageSize & 0xFF)
-    };
-
-    // Send the header
-    int headerSent = send(clientSocket, reinterpret_cast<const char*>(header), 4, 0);
-
-    if (headerSent != 4)
-    {
-        std::cerr << "Failed to send message header\n";
+#ifdef _WIN32
+        std::cerr << "socket() failed with error "
+                  << WSAGetLastError() << std::endl;
+#else
+        std::cerr << "socket() failed: "
+                  << std::strerror(errno) << std::endl;
+#endif
         return false;
     }
 
-    // Send the protobuf message
-    int messageSent = send(clientSocket, reinterpret_cast<const char*>(buffer), static_cast<int>(messageSize), 0);
+    int reuseAddress = 1;
 
-    if (messageSent != static_cast<int>(messageSize))
+#ifdef _WIN32
+    if (setsockopt(
+            serverSocket,
+            SOL_SOCKET,
+            SO_REUSEADDR,
+            reinterpret_cast<const char*>(&reuseAddress),
+            sizeof(reuseAddress)) == SOCKET_ERROR)
     {
-        std::cerr << "Failed to send protobuf message\n";
+        std::cerr << "setsockopt() failed with error "
+                  << WSAGetLastError() << std::endl;
+
+        closesocket(serverSocket);
+        serverSocket = INVALID_TCP_SOCKET;
         return false;
     }
+#else
+    if (setsockopt(
+            serverSocket,
+            SOL_SOCKET,
+            SO_REUSEADDR,
+            &reuseAddress,
+            sizeof(reuseAddress)) == -1)
+    {
+        std::cerr << "setsockopt() failed: "
+                  << std::strerror(errno) << std::endl;
+
+        close(serverSocket);
+        serverSocket = INVALID_TCP_SOCKET;
+        return false;
+    }
+#endif
+
+    sockaddr_in serverAddress{};
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+    serverAddress.sin_port = htons(
+        static_cast<uint16_t>(port));
+
+    if (::bind(
+            serverSocket,
+            reinterpret_cast<sockaddr*>(&serverAddress),
+            sizeof(serverAddress)) != 0)
+    {
+#ifdef _WIN32
+        std::cerr << "bind() failed with error "
+                  << WSAGetLastError() << std::endl;
+
+        closesocket(serverSocket);
+#else
+        std::cerr << "bind() failed: "
+                  << std::strerror(errno) << std::endl;
+
+        close(serverSocket);
+#endif
+
+        serverSocket = INVALID_TCP_SOCKET;
+        return false;
+    }
+
+    if (::listen(serverSocket, SOMAXCONN) != 0)
+    {
+#ifdef _WIN32
+        std::cerr << "listen() failed with error "
+                  << WSAGetLastError() << std::endl;
+
+        closesocket(serverSocket);
+#else
+        std::cerr << "listen() failed: "
+                  << std::strerror(errno) << std::endl;
+
+        close(serverSocket);
+#endif
+
+        serverSocket = INVALID_TCP_SOCKET;
+        return false;
+    }
+
+    // Make the listening socket non-blocking.
+#ifdef _WIN32
+    u_long nonBlocking = 1;
+
+    if (ioctlsocket(
+            serverSocket,
+            FIONBIO,
+            &nonBlocking) != 0)
+    {
+        std::cerr << "ioctlsocket() failed with error "
+                  << WSAGetLastError() << std::endl;
+
+        closesocket(serverSocket);
+        serverSocket = INVALID_TCP_SOCKET;
+        return false;
+    }
+#else
+    const int flags = fcntl(serverSocket, F_GETFL, 0);
+
+    if (flags == -1 ||
+        fcntl(serverSocket, F_SETFL, flags | O_NONBLOCK) == -1)
+    {
+        std::cerr << "Failed to make listening socket non-blocking: "
+                  << std::strerror(errno) << std::endl;
+
+        close(serverSocket);
+        serverSocket = INVALID_TCP_SOCKET;
+        return false;
+    }
+#endif
 
     return true;
+}
+
+void TcpServer::AcceptNewConnections()
+{
+    if (serverSocket == INVALID_TCP_SOCKET)
+    {
+        return;
+    }
+
+    while (true)
+    {
+        sockaddr_in clientAddress{};
+
+#ifdef _WIN32
+        int clientAddressSize = sizeof(clientAddress);
+#else
+        socklen_t clientAddressSize = sizeof(clientAddress);
+#endif
+
+        const TcpSocket clientSocket = ::accept(
+            serverSocket,
+            reinterpret_cast<sockaddr*>(&clientAddress),
+            &clientAddressSize);
+
+        if (clientSocket == INVALID_TCP_SOCKET)
+        {
+#ifdef _WIN32
+            const int error = WSAGetLastError();
+
+            if (error == WSAEWOULDBLOCK)
+            {
+                break;
+            }
+
+            std::cerr << "accept() failed with error "
+                      << error << std::endl;
+#else
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
+            {
+                break;
+            }
+
+            if (errno == EINTR)
+            {
+                continue;
+            }
+
+            std::cerr << "accept() failed: "
+                      << std::strerror(errno) << std::endl;
+#endif
+            break;
+        }
+
+        char clientIp[INET_ADDRSTRLEN]{};
+
+        if (inet_ntop(
+                AF_INET,
+                &clientAddress.sin_addr,
+                clientIp,
+                sizeof(clientIp)) != nullptr)
+        {
+            std::cout << "Module connected from "
+                      << clientIp << ":"
+                      << ntohs(clientAddress.sin_port)
+                      << std::endl;
+        }
+
+        auto connection =
+            std::make_unique<TcpConnection>(clientSocket);
+
+        if (!connection->IsConnected())
+        {
+            connection->Close();
+            continue;
+        }
+
+        connections.push_back(std::move(connection));
+    }
+}
+
+void TcpServer::ProcessConnections()
+{
+    for (auto& connection : connections)
+    {
+        if (!connection || !connection->IsConnected())
+        {
+            continue;
+        }
+
+        std::vector<ModuleMessage> messages;
+
+        if (!connection->Update(messages))
+        {
+            continue;
+        }
+
+        for (const auto& message : messages)
+        {
+            moduleService.HandleMessage(
+                message,
+                connection->GetSocket(),
+                *connection);
+        }
+    }
 }
 
 void TcpServer::RemoveDisconnectedConnections()
@@ -175,179 +395,13 @@ void TcpServer::RemoveDisconnectedConnections()
         std::remove_if(
             connections.begin(),
             connections.end(),
-
             [](const std::unique_ptr<TcpConnection>& connection)
             {
-                return !connection->IsConnected();
-            }
-        ),
-
-        connections.end()
-    );
+                return !connection || !connection->IsConnected();
+            }),
+        connections.end());
 }
 
-void TcpServer::ProcessConnections()
-{
-    for (auto& connection : connections)
-    {
-        if (!connection->IsConnected()) continue;
-
-        std::vector<ModuleMessage> messages;
-
-        if (!connection->Update(messages)) continue;
-
-        /*
-         * A single TCP update may contain multiple
-         * complete protobuf messages.
-         */
-        for (const ModuleMessage& message : messages)
-        {
-            moduleService.HandleMessage(message, connection->GetSocket(), *connection);
-        }
-    }
-}
-
-void TcpServer::AcceptNewConnections()
-{
-    while (running)
-    {
-        sockaddr_in clientAddress{};
-        int clientAddressSize = sizeof(clientAddress);
-
-        SOCKET clientSocket = accept(
-            static_cast<SOCKET>(serverSocket),
-            reinterpret_cast<sockaddr*>(&clientAddress),
-            &clientAddressSize
-        );
-
-        if (clientSocket == INVALID_SOCKET)
-        {
-            int error = WSAGetLastError();
-
-            /*
-             * No more clients waiting.
-             *
-             * This is normal because the listening socket
-             * is non-blocking.
-             */
-            if (error == WSAEWOULDBLOCK) return;
-
-            std::cerr << "accept() failed with error " << error << '\n';
-
-            return;
-        }
-
-        char clientIp[INET_ADDRSTRLEN]{};
-
-        inet_ntop(AF_INET, &clientAddress.sin_addr, clientIp, sizeof(clientIp));
-
-        std::cout << "Module connected from " << clientIp << '\n';
-
-        auto connection = std::make_unique<TcpConnection>(static_cast<int>(clientSocket));
-
-        if (!connection->IsConnected())
-        {
-            std::cerr << "Failed to initialize TCP connection.\n";
-
-            connection->Close();
-
-            continue;
-        }
-
-        std::cout << "Client socket: " << connection->GetSocket() << '\n';
-
-        connections.push_back(std::move(connection));
-    }
-}
-
-bool TcpServer::SetupServerSocket()
-{
-    serverSocket = static_cast<int>(socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
-
-    if (serverSocket == INVALID_SOCKET)
-    {
-        std::cerr << "Failed to create server socket.\n";
-
-        serverSocket = -1;
-
-        return false;
-    }
-
-    /*
-     * Allow the server to reuse the port after shutdown.
-     */
-    BOOL reuseAddress = TRUE;
-
-    if (setsockopt(
-        static_cast<SOCKET>(serverSocket),
-        SOL_SOCKET,
-        SO_REUSEADDR,
-        reinterpret_cast<const char*>(&reuseAddress),
-        sizeof(reuseAddress)
-    ) == SOCKET_ERROR)
-    {
-        std::cerr << "Failed to configure SO_REUSEADDR.\n";
-
-        closesocket(static_cast<SOCKET>(serverSocket));
-
-        serverSocket = -1;
-
-        return false;
-    }
-
-    sockaddr_in serverAddress{};
-
-    serverAddress.sin_family = AF_INET;
-    serverAddress.sin_addr.s_addr = INADDR_ANY;
-    serverAddress.sin_port = htons(static_cast<u_short>(port));
-
-    if (bind(
-        static_cast<SOCKET>(serverSocket),
-        reinterpret_cast<sockaddr*>(&serverAddress),
-        sizeof(serverAddress)
-    ) == SOCKET_ERROR)
-    {
-        std::cerr << "Failed to bind server socket to port " << port << ".\n";
-
-        closesocket(static_cast<SOCKET>(serverSocket));
-
-        serverSocket = -1;
-
-        return false;
-    }
-
-    if (listen(static_cast<SOCKET>(serverSocket), SOMAXCONN) == SOCKET_ERROR)
-    {
-        std::cerr << "Failed to listen on server socket.\n";
-
-        closesocket(static_cast<SOCKET>(serverSocket));
-
-        serverSocket = -1;
-
-        return false;
-    }
-
-    /*
-     * Make the listening socket non-blocking.
-     *
-     * This is important because RoomEngine::Update()
-     * must never get stuck waiting for a new client.
-     */
-    u_long mode = 1;
-
-    if (ioctlsocket(static_cast<SOCKET>(serverSocket), FIONBIO, &mode) != 0)
-    {
-        std::cerr << "Failed to make server socket non-blocking.\n";
-
-        closesocket(static_cast<SOCKET>(serverSocket));
-
-        serverSocket = -1;
-
-        return false;
-    }
-
-    return true;
-}
 
 
 
