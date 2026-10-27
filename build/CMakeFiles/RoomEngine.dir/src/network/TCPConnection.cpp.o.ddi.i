@@ -13,6 +13,7 @@
 
 
 
+
        
 
 # 1 "/usr/include/c++/14/chrono" 1 3
@@ -86982,7 +86983,8 @@ namespace __detail
 
 }
 # 3361 "/usr/include/c++/14/chrono" 2 3
-# 7 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.h" 2
+# 8 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.h" 2
+
 
 
 
@@ -87715,12 +87717,16 @@ extern const pb_msgdesc_t Heartbeat_msg;
 extern const pb_msgdesc_t HeartbeatAck_msg;
 # 227 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/generated/hardware.pb.h"
 }
-# 11 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.h" 2
+# 13 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.h" 2
+# 22 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.h"
+using TcpSocket = int;
+inline constexpr TcpSocket INVALID_TCP_SOCKET = -1;
+
 
 class TcpConnection
 {
 public:
-    explicit TcpConnection(int socket);
+    explicit TcpConnection(TcpSocket socket);
     ~TcpConnection();
 
     TcpConnection(const TcpConnection&) = delete;
@@ -87728,8 +87734,8 @@ public:
 
     bool IsConnected() const;
 
-    int GetSocket() const;
-# 36 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.h"
+    TcpSocket GetSocket() const;
+# 50 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.h"
     bool Update(std::vector<ModuleMessage>& messages);
 
     bool Send(const ModuleMessage& message);
@@ -87749,13 +87755,11 @@ private:
 
     bool SendAll(const uint8_t* buffer, size_t size);
 
-    void HandleHeartbeat(
-        const ModuleMessage& message
-    );
+    void HandleHeartbeat(const ModuleMessage& message);
 
     bool CheckHeartbeatTimeout();
 
-    int socket;
+    TcpSocket socket;
     bool connected;
 
     std::vector<uint8_t> receiveBuffer;
@@ -87764,46 +87768,17 @@ private:
 
     static constexpr uint32_t MAX_MESSAGE_SIZE = 1024;
 
-    static constexpr std::chrono::seconds HEARTBEAT_TIMEOUT{
-        6
-    };
+    static constexpr std::chrono::seconds HEARTBEAT_TIMEOUT{6};
 };
 # 6 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 2
 
-# 1 "/usr/include/c++/14/iostream" 1 3
-# 36 "/usr/include/c++/14/iostream" 3
+# 1 "/usr/include/c++/14/cerrno" 1 3
+# 39 "/usr/include/c++/14/cerrno" 3
        
-# 37 "/usr/include/c++/14/iostream" 3
-
-
-
-
-
-
-
-
-# 44 "/usr/include/c++/14/iostream" 3
-namespace std __attribute__ ((__visibility__ ("default")))
-{
-
-# 62 "/usr/include/c++/14/iostream" 3
-  extern istream cin;
-  extern ostream cout;
-  extern ostream cerr;
-  extern ostream clog;
-
-
-  extern wistream wcin;
-  extern wostream wcout;
-  extern wostream wcerr;
-  extern wostream wclog;
-# 82 "/usr/include/c++/14/iostream" 3
-  __extension__ __asm (".globl _ZSt21ios_base_library_initv");
-
-
-
-}
+# 40 "/usr/include/c++/14/cerrno" 3
 # 8 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 2
+
+
 # 1 "/usr/include/c++/14/cstring" 1 3
 # 39 "/usr/include/c++/14/cstring" 3
        
@@ -87815,6 +87790,8 @@ namespace std __attribute__ ((__visibility__ ("default")))
        
 # 48 "/usr/include/c++/14/bits/version.h" 3
 # 43 "/usr/include/c++/14/cstring" 2 3
+# 72 "/usr/include/c++/14/cstring" 3
+
 # 72 "/usr/include/c++/14/cstring" 3
 extern "C++"
 {
@@ -87850,10 +87827,39 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 }
 }
-# 9 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 2
+# 11 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 2
+# 1 "/usr/include/c++/14/iostream" 1 3
+# 36 "/usr/include/c++/14/iostream" 3
+       
+# 37 "/usr/include/c++/14/iostream" 3
 
 
 
+
+
+
+
+namespace std __attribute__ ((__visibility__ ("default")))
+{
+
+# 62 "/usr/include/c++/14/iostream" 3
+  extern istream cin;
+  extern ostream cout;
+  extern ostream cerr;
+  extern ostream clog;
+
+
+  extern wistream wcin;
+  extern wostream wcout;
+  extern wostream wcerr;
+  extern wostream wclog;
+# 82 "/usr/include/c++/14/iostream" 3
+  __extension__ __asm (".globl _ZSt21ios_base_library_initv");
+
+
+
+}
+# 12 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 2
 
 
 
@@ -88094,13 +88100,14 @@ struct Action {
 
 
 
+
 class IModuleSender
 {
 public:
     virtual ~IModuleSender() = default;
 
     virtual bool Send(
-        int clientSocket,
+        TcpSocket clientSocket,
         const ModuleMessage& message
     ) = 0;
 };
@@ -88141,18 +88148,2043 @@ private:
 };
 # 18 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 2
 # 26 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+# 1 "/usr/include/fcntl.h" 1 3 4
+# 28 "/usr/include/fcntl.h" 3 4
+
+# 28 "/usr/include/fcntl.h" 3 4
+extern "C" {
+
+
+
+
+
+
+# 1 "/usr/include/aarch64-linux-gnu/bits/fcntl.h" 1 3 4
+# 40 "/usr/include/aarch64-linux-gnu/bits/fcntl.h" 3 4
+struct flock
+  {
+    short int l_type;
+    short int l_whence;
+    __off_t l_start;
+    __off_t l_len;
+    __pid_t l_pid;
+  };
+
+
+struct flock64
+  {
+    short int l_type;
+    short int l_whence;
+    __off64_t l_start;
+    __off64_t l_len;
+    __pid_t l_pid;
+  };
+
+
+
+# 1 "/usr/include/aarch64-linux-gnu/bits/fcntl-linux.h" 1 3 4
+# 38 "/usr/include/aarch64-linux-gnu/bits/fcntl-linux.h" 3 4
+# 1 "/usr/include/aarch64-linux-gnu/bits/types/struct_iovec.h" 1 3 4
+# 23 "/usr/include/aarch64-linux-gnu/bits/types/struct_iovec.h" 3 4
+# 1 "/usr/lib/gcc/aarch64-linux-gnu/14/include/stddef.h" 1 3 4
+# 24 "/usr/include/aarch64-linux-gnu/bits/types/struct_iovec.h" 2 3 4
+
+
+struct iovec
+  {
+    void *iov_base;
+    size_t iov_len;
+  };
+# 39 "/usr/include/aarch64-linux-gnu/bits/fcntl-linux.h" 2 3 4
+# 84 "/usr/include/aarch64-linux-gnu/bits/fcntl-linux.h" 3 4
+# 1 "/usr/include/aarch64-linux-gnu/bits/cloexec.h" 1 3 4
+# 85 "/usr/include/aarch64-linux-gnu/bits/fcntl-linux.h" 2 3 4
+# 265 "/usr/include/aarch64-linux-gnu/bits/fcntl-linux.h" 3 4
+enum __pid_type
+  {
+    F_OWNER_TID = 0,
+    F_OWNER_PID,
+    F_OWNER_PGRP,
+    F_OWNER_GID = F_OWNER_PGRP
+  };
+
+
+struct f_owner_ex
+  {
+    enum __pid_type type;
+    __pid_t pid;
+  };
+# 355 "/usr/include/aarch64-linux-gnu/bits/fcntl-linux.h" 3 4
+# 1 "/usr/include/linux/falloc.h" 1 3 4
+# 356 "/usr/include/aarch64-linux-gnu/bits/fcntl-linux.h" 2 3 4
+
+
+
+struct file_handle
+{
+  unsigned int handle_bytes;
+  int handle_type;
+
+  unsigned char f_handle[0];
+};
+# 382 "/usr/include/aarch64-linux-gnu/bits/fcntl-linux.h" 3 4
+extern "C" {
+
+
+
+
+extern __ssize_t readahead (int __fd, __off64_t __offset, size_t __count)
+    noexcept (true);
+
+
+
+
+
+
+extern int sync_file_range (int __fd, __off64_t __offset, __off64_t __count,
+       unsigned int __flags);
+
+
+
+
+
+
+extern __ssize_t vmsplice (int __fdout, const struct iovec *__iov,
+      size_t __count, unsigned int __flags);
+
+
+
+
+
+extern __ssize_t splice (int __fdin, __off64_t *__offin, int __fdout,
+    __off64_t *__offout, size_t __len,
+    unsigned int __flags);
+
+
+
+
+
+extern __ssize_t tee (int __fdin, int __fdout, size_t __len,
+        unsigned int __flags);
+
+
+
+
+
+
+extern int fallocate (int __fd, int __mode, __off_t __offset, __off_t __len);
+# 437 "/usr/include/aarch64-linux-gnu/bits/fcntl-linux.h" 3 4
+extern int fallocate64 (int __fd, int __mode, __off64_t __offset,
+   __off64_t __len);
+
+
+
+
+extern int name_to_handle_at (int __dfd, const char *__name,
+         struct file_handle *__handle, int *__mnt_id,
+         int __flags) noexcept (true);
+
+
+
+
+
+extern int open_by_handle_at (int __mountdirfd, struct file_handle *__handle,
+         int __flags);
+
+
+
+}
+# 62 "/usr/include/aarch64-linux-gnu/bits/fcntl.h" 2 3 4
+# 36 "/usr/include/fcntl.h" 2 3 4
+# 78 "/usr/include/fcntl.h" 3 4
+# 1 "/usr/include/aarch64-linux-gnu/bits/stat.h" 1 3 4
+# 25 "/usr/include/aarch64-linux-gnu/bits/stat.h" 3 4
+# 1 "/usr/include/aarch64-linux-gnu/bits/struct_stat.h" 1 3 4
+# 27 "/usr/include/aarch64-linux-gnu/bits/struct_stat.h" 3 4
+# 1 "/usr/include/aarch64-linux-gnu/bits/wordsize.h" 1 3 4
+# 28 "/usr/include/aarch64-linux-gnu/bits/struct_stat.h" 2 3 4
+# 44 "/usr/include/aarch64-linux-gnu/bits/struct_stat.h" 3 4
+struct stat
+  {
+    __dev_t st_dev;
+    __ino_t st_ino;
+    __mode_t st_mode;
+    __nlink_t st_nlink;
+    __uid_t st_uid;
+    __gid_t st_gid;
+    __dev_t st_rdev;
+    __dev_t __pad1;
+    __off_t st_size;
+    __blksize_t st_blksize;
+    int __pad2;
+    __blkcnt_t st_blocks;
+
+
+
+
+
+
+
+    struct timespec st_atim;
+    struct timespec st_mtim;
+    struct timespec st_ctim;
+# 79 "/usr/include/aarch64-linux-gnu/bits/struct_stat.h" 3 4
+    int __glibc_reserved[2];
+  };
+
+
+
+
+struct stat64
+  {
+    __dev_t st_dev;
+    __ino64_t st_ino;
+    __mode_t st_mode;
+    __nlink_t st_nlink;
+    __uid_t st_uid;
+    __gid_t st_gid;
+    __dev_t st_rdev;
+    __dev_t __pad1;
+    __off64_t st_size;
+    __blksize_t st_blksize;
+    int __pad2;
+    __blkcnt64_t st_blocks;
+
+
+
+
+
+
+
+    struct timespec st_atim;
+    struct timespec st_mtim;
+    struct timespec st_ctim;
+# 117 "/usr/include/aarch64-linux-gnu/bits/struct_stat.h" 3 4
+    int __glibc_reserved[2];
+  };
+# 26 "/usr/include/aarch64-linux-gnu/bits/stat.h" 2 3 4
+# 79 "/usr/include/fcntl.h" 2 3 4
+# 177 "/usr/include/fcntl.h" 3 4
+extern int fcntl (int __fd, int __cmd, ...);
+# 186 "/usr/include/fcntl.h" 3 4
+extern int fcntl64 (int __fd, int __cmd, ...);
+# 209 "/usr/include/fcntl.h" 3 4
+extern int open (const char *__file, int __oflag, ...) __attribute__ ((__nonnull__ (1)));
+# 219 "/usr/include/fcntl.h" 3 4
+extern int open64 (const char *__file, int __oflag, ...) __attribute__ ((__nonnull__ (1)));
+# 233 "/usr/include/fcntl.h" 3 4
+extern int openat (int __fd, const char *__file, int __oflag, ...)
+     __attribute__ ((__nonnull__ (2)));
+# 244 "/usr/include/fcntl.h" 3 4
+extern int openat64 (int __fd, const char *__file, int __oflag, ...)
+     __attribute__ ((__nonnull__ (2)));
+# 255 "/usr/include/fcntl.h" 3 4
+extern int creat (const char *__file, mode_t __mode) __attribute__ ((__nonnull__ (1)));
+# 265 "/usr/include/fcntl.h" 3 4
+extern int creat64 (const char *__file, mode_t __mode) __attribute__ ((__nonnull__ (1)));
+# 284 "/usr/include/fcntl.h" 3 4
+extern int lockf (int __fd, int __cmd, off_t __len);
+# 293 "/usr/include/fcntl.h" 3 4
+extern int lockf64 (int __fd, int __cmd, off64_t __len);
+
+
+
+
+
+
+
+extern int posix_fadvise (int __fd, off_t __offset, off_t __len,
+     int __advise) noexcept (true);
+# 313 "/usr/include/fcntl.h" 3 4
+extern int posix_fadvise64 (int __fd, off64_t __offset, off64_t __len,
+       int __advise) noexcept (true);
+# 323 "/usr/include/fcntl.h" 3 4
+extern int posix_fallocate (int __fd, off_t __offset, off_t __len);
+# 334 "/usr/include/fcntl.h" 3 4
+extern int posix_fallocate64 (int __fd, off64_t __offset, off64_t __len);
+# 344 "/usr/include/fcntl.h" 3 4
+}
+# 27 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 2
+# 1 "/usr/include/aarch64-linux-gnu/sys/socket.h" 1 3 4
+# 24 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern "C" {
+
+
+
+# 1 "/usr/lib/gcc/aarch64-linux-gnu/14/include/stddef.h" 1 3 4
+# 29 "/usr/include/aarch64-linux-gnu/sys/socket.h" 2 3 4
+
+
+
+
+# 1 "/usr/include/aarch64-linux-gnu/bits/socket.h" 1 3 4
+# 27 "/usr/include/aarch64-linux-gnu/bits/socket.h" 3 4
+# 1 "/usr/lib/gcc/aarch64-linux-gnu/14/include/stddef.h" 1 3 4
+# 28 "/usr/include/aarch64-linux-gnu/bits/socket.h" 2 3 4
+
+
+
+
+
+typedef __socklen_t socklen_t;
+
+
+
+
+# 1 "/usr/include/aarch64-linux-gnu/bits/socket_type.h" 1 3 4
+# 24 "/usr/include/aarch64-linux-gnu/bits/socket_type.h" 3 4
+enum __socket_type
+{
+  SOCK_STREAM = 1,
+
+
+  SOCK_DGRAM = 2,
+
+
+  SOCK_RAW = 3,
+
+  SOCK_RDM = 4,
+
+  SOCK_SEQPACKET = 5,
+
+
+  SOCK_DCCP = 6,
+
+  SOCK_PACKET = 10,
+
+
+
+
+
+
+
+  SOCK_CLOEXEC = 02000000,
+
+
+  SOCK_NONBLOCK = 00004000
+
+
+};
+# 39 "/usr/include/aarch64-linux-gnu/bits/socket.h" 2 3 4
+# 181 "/usr/include/aarch64-linux-gnu/bits/socket.h" 3 4
+# 1 "/usr/include/aarch64-linux-gnu/bits/sockaddr.h" 1 3 4
+# 28 "/usr/include/aarch64-linux-gnu/bits/sockaddr.h" 3 4
+typedef unsigned short int sa_family_t;
+# 182 "/usr/include/aarch64-linux-gnu/bits/socket.h" 2 3 4
+
+
+struct __attribute__ ((__may_alias__)) sockaddr
+  {
+    sa_family_t sa_family;
+    char sa_data[14];
+  };
+# 197 "/usr/include/aarch64-linux-gnu/bits/socket.h" 3 4
+struct __attribute__ ((__may_alias__)) sockaddr_storage
+  {
+    sa_family_t ss_family;
+    char __ss_padding[(128 - (sizeof (unsigned short int)) - sizeof (unsigned long int))];
+    unsigned long int __ss_align;
+  };
+
+
+
+enum
+  {
+    MSG_OOB = 0x01,
+
+    MSG_PEEK = 0x02,
+
+    MSG_DONTROUTE = 0x04,
+
+
+
+    MSG_TRYHARD = MSG_DONTROUTE,
+
+
+    MSG_CTRUNC = 0x08,
+
+    MSG_PROXY = 0x10,
+
+    MSG_TRUNC = 0x20,
+
+    MSG_DONTWAIT = 0x40,
+
+    MSG_EOR = 0x80,
+
+    MSG_WAITALL = 0x100,
+
+    MSG_FIN = 0x200,
+
+    MSG_SYN = 0x400,
+
+    MSG_CONFIRM = 0x800,
+
+    MSG_RST = 0x1000,
+
+    MSG_ERRQUEUE = 0x2000,
+
+    MSG_NOSIGNAL = 0x4000,
+
+    MSG_MORE = 0x8000,
+
+    MSG_WAITFORONE = 0x10000,
+
+    MSG_BATCH = 0x40000,
+
+    MSG_SOCK_DEVMEM = 0x2000000,
+
+    MSG_ZEROCOPY = 0x4000000,
+
+    MSG_FASTOPEN = 0x20000000,
+
+
+    MSG_CMSG_CLOEXEC = 0x40000000
+
+
+
+  };
+
+
+
+
+struct msghdr
+  {
+    void *msg_name;
+    socklen_t msg_namelen;
+
+    struct iovec *msg_iov;
+    size_t msg_iovlen;
+
+    void *msg_control;
+    size_t msg_controllen;
+
+
+
+
+    int msg_flags;
+  };
+
+
+struct cmsghdr
+  {
+    size_t cmsg_len;
+
+
+
+
+    int cmsg_level;
+    int cmsg_type;
+
+    __extension__ unsigned char __cmsg_data [];
+
+  };
+# 319 "/usr/include/aarch64-linux-gnu/bits/socket.h" 3 4
+extern struct cmsghdr *__cmsg_nxthdr (struct msghdr *__mhdr,
+          struct cmsghdr *__cmsg) noexcept (true);
+# 366 "/usr/include/aarch64-linux-gnu/bits/socket.h" 3 4
+enum
+  {
+    SCM_RIGHTS = 0x01
+
+
+    , SCM_CREDENTIALS = 0x02
+
+    , SCM_SECURITY = 0x03
+
+    , SCM_PIDFD = 0x04
+
+
+  };
+
+
+
+struct ucred
+{
+  pid_t pid;
+  uid_t uid;
+  gid_t gid;
+};
+
+
+
+
+# 1 "/usr/lib/linux/uapi/arm64/asm/socket.h" 1 3 4
+# 1 "/usr/include/asm-generic/socket.h" 1 3 4
+
+
+
+
+
+# 1 "/usr/lib/linux/uapi/arm64/asm/sockios.h" 1 3 4
+# 1 "/usr/include/asm-generic/sockios.h" 1 3 4
+# 2 "/usr/lib/linux/uapi/arm64/asm/sockios.h" 2 3 4
+# 7 "/usr/include/asm-generic/socket.h" 2 3 4
+# 2 "/usr/lib/linux/uapi/arm64/asm/socket.h" 2 3 4
+# 393 "/usr/include/aarch64-linux-gnu/bits/socket.h" 2 3 4
+
+
+
+
+
+
+struct linger
+  {
+    int l_onoff;
+    int l_linger;
+  };
+# 34 "/usr/include/aarch64-linux-gnu/sys/socket.h" 2 3 4
+
+
+# 1 "/usr/include/aarch64-linux-gnu/bits/types/struct_osockaddr.h" 1 3 4
+
+
+
+
+
+struct osockaddr
+{
+  unsigned short int sa_family;
+  unsigned char sa_data[14];
+};
+# 37 "/usr/include/aarch64-linux-gnu/sys/socket.h" 2 3 4
+
+
+
+
+enum
+{
+  SHUT_RD = 0,
+
+  SHUT_WR,
+
+  SHUT_RDWR
+
+};
+# 90 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+struct mmsghdr
+  {
+    struct msghdr msg_hdr;
+    unsigned int msg_len;
+
+  };
+
+
+
+
+
+
+extern int socket (int __domain, int __type, int __protocol) noexcept (true);
+
+
+
+
+
+extern int socketpair (int __domain, int __type, int __protocol,
+         int __fds[2]) noexcept (true);
+
+
+extern int bind (int __fd, const struct sockaddr * __addr, socklen_t __len)
+     noexcept (true);
+
+
+extern int getsockname (int __fd, struct sockaddr *__restrict __addr,
+   socklen_t *__restrict __len) noexcept (true);
+# 126 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern int connect (int __fd, const struct sockaddr * __addr, socklen_t __len);
+
+
+
+extern int getpeername (int __fd, struct sockaddr *__restrict __addr,
+   socklen_t *__restrict __len) noexcept (true);
+
+
+
+
+
+
+extern ssize_t send (int __fd, const void *__buf, size_t __n, int __flags);
+
+
+
+
+
+
+extern ssize_t recv (int __fd, void *__buf, size_t __n, int __flags);
+
+
+
+
+
+
+extern ssize_t sendto (int __fd, const void *__buf, size_t __n,
+         int __flags, const struct sockaddr * __addr,
+         socklen_t __addr_len);
+# 163 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern ssize_t recvfrom (int __fd, void *__restrict __buf, size_t __n,
+    int __flags, struct sockaddr *__restrict __addr,
+    socklen_t *__restrict __addr_len);
+# 174 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern ssize_t sendmsg (int __fd, const struct msghdr *__message,
+   int __flags);
+# 195 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern int sendmmsg (int __fd, struct mmsghdr *__vmessages,
+       unsigned int __vlen, int __flags);
+# 216 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern ssize_t recvmsg (int __fd, struct msghdr *__message, int __flags);
+# 235 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern int recvmmsg (int __fd, struct mmsghdr *__vmessages,
+       unsigned int __vlen, int __flags,
+       struct timespec *__tmo);
+# 255 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern int getsockopt (int __fd, int __level, int __optname,
+         void *__restrict __optval,
+         socklen_t *__restrict __optlen) noexcept (true);
+# 277 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern int setsockopt (int __fd, int __level, int __optname,
+         const void *__optval, socklen_t __optlen) noexcept (true);
+# 296 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern int listen (int __fd, int __n) noexcept (true);
+# 306 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern int accept (int __fd, struct sockaddr *__restrict __addr,
+     socklen_t *__restrict __addr_len);
+
+
+
+
+
+
+extern int accept4 (int __fd, struct sockaddr *__restrict __addr,
+      socklen_t *__restrict __addr_len, int __flags);
+# 324 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+extern int shutdown (int __fd, int __how) noexcept (true);
+
+
+
+
+extern int sockatmark (int __fd) noexcept (true);
+
+
+
+
+
+
+
+extern int isfdtype (int __fd, int __fdtype) noexcept (true);
+# 346 "/usr/include/aarch64-linux-gnu/sys/socket.h" 3 4
+}
+# 28 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 2
+# 1 "/usr/include/unistd.h" 1 3 4
+# 27 "/usr/include/unistd.h" 3 4
+extern "C" {
+# 202 "/usr/include/unistd.h" 3 4
+# 1 "/usr/include/aarch64-linux-gnu/bits/posix_opt.h" 1 3 4
+# 203 "/usr/include/unistd.h" 2 3 4
+
+
+
+# 1 "/usr/include/aarch64-linux-gnu/bits/environments.h" 1 3 4
+# 22 "/usr/include/aarch64-linux-gnu/bits/environments.h" 3 4
+# 1 "/usr/include/aarch64-linux-gnu/bits/wordsize.h" 1 3 4
+# 23 "/usr/include/aarch64-linux-gnu/bits/environments.h" 2 3 4
+# 207 "/usr/include/unistd.h" 2 3 4
+# 226 "/usr/include/unistd.h" 3 4
+# 1 "/usr/lib/gcc/aarch64-linux-gnu/14/include/stddef.h" 1 3 4
+# 227 "/usr/include/unistd.h" 2 3 4
+# 287 "/usr/include/unistd.h" 3 4
+extern int access (const char *__name, int __type) noexcept (true) __attribute__ ((__nonnull__ (1)));
+
+
+
+
+extern int euidaccess (const char *__name, int __type)
+     noexcept (true) __attribute__ ((__nonnull__ (1)));
+
+
+extern int eaccess (const char *__name, int __type)
+     noexcept (true) __attribute__ ((__nonnull__ (1)));
+
+
+extern int execveat (int __fd, const char *__path, char *const __argv[],
+                     char *const __envp[], int __flags)
+    noexcept (true) __attribute__ ((__nonnull__ (2, 3)));
+
+
+
+
+
+
+extern int faccessat (int __fd, const char *__file, int __type, int __flag)
+     noexcept (true) __attribute__ ((__nonnull__ (2))) ;
+# 339 "/usr/include/unistd.h" 3 4
+extern __off_t lseek (int __fd, __off_t __offset, int __whence) noexcept (true);
+# 350 "/usr/include/unistd.h" 3 4
+extern __off64_t lseek64 (int __fd, __off64_t __offset, int __whence)
+     noexcept (true);
+
+
+
+
+
+
+extern int close (int __fd);
+
+
+
+
+extern void closefrom (int __lowfd) noexcept (true);
+
+
+
+
+
+
+
+extern ssize_t read (int __fd, void *__buf, size_t __nbytes)
+    __attribute__ ((__access__ (__write_only__, 2, 3)));
+
+
+
+
+
+extern ssize_t write (int __fd, const void *__buf, size_t __n)
+    __attribute__ ((__access__ (__read_only__, 2, 3)));
+# 389 "/usr/include/unistd.h" 3 4
+extern ssize_t pread (int __fd, void *__buf, size_t __nbytes,
+        __off_t __offset)
+    __attribute__ ((__access__ (__write_only__, 2, 3)));
+
+
+
+
+
+
+extern ssize_t pwrite (int __fd, const void *__buf, size_t __n,
+         __off_t __offset)
+    __attribute__ ((__access__ (__read_only__, 2, 3)));
+# 422 "/usr/include/unistd.h" 3 4
+extern ssize_t pread64 (int __fd, void *__buf, size_t __nbytes,
+   __off64_t __offset)
+    __attribute__ ((__access__ (__write_only__, 2, 3)));
+
+
+extern ssize_t pwrite64 (int __fd, const void *__buf, size_t __n,
+    __off64_t __offset)
+    __attribute__ ((__access__ (__read_only__, 2, 3)));
+
+
+
+
+
+
+
+extern int pipe (int __pipedes[2]) noexcept (true) ;
+
+
+
+
+extern int pipe2 (int __pipedes[2], int __flags) noexcept (true) ;
+# 452 "/usr/include/unistd.h" 3 4
+extern unsigned int alarm (unsigned int __seconds) noexcept (true);
+# 464 "/usr/include/unistd.h" 3 4
+extern unsigned int sleep (unsigned int __seconds);
+
+
+
+
+
+
+
+extern __useconds_t ualarm (__useconds_t __value, __useconds_t __interval)
+     noexcept (true);
+
+
+
+
+
+
+extern int usleep (__useconds_t __useconds);
+# 489 "/usr/include/unistd.h" 3 4
+extern int pause (void);
+
+
+
+extern int chown (const char *__file, __uid_t __owner, __gid_t __group)
+     noexcept (true) __attribute__ ((__nonnull__ (1))) ;
+
+
+
+extern int fchown (int __fd, __uid_t __owner, __gid_t __group) noexcept (true) ;
+
+
+
+
+extern int lchown (const char *__file, __uid_t __owner, __gid_t __group)
+     noexcept (true) __attribute__ ((__nonnull__ (1))) ;
+
+
+
+
+
+
+extern int fchownat (int __fd, const char *__file, __uid_t __owner,
+       __gid_t __group, int __flag)
+     noexcept (true) __attribute__ ((__nonnull__ (2))) ;
+
+
+
+extern int chdir (const char *__path) noexcept (true) __attribute__ ((__nonnull__ (1))) ;
+
+
+
+extern int fchdir (int __fd) noexcept (true) ;
+# 531 "/usr/include/unistd.h" 3 4
+extern char *getcwd (char *__buf, size_t __size) noexcept (true) ;
+
+
+
+
+
+extern char *get_current_dir_name (void) noexcept (true);
+
+
+
+
+
+
+
+extern char *getwd (char *__buf)
+     noexcept (true) __attribute__ ((__nonnull__ (1))) __attribute__ ((__deprecated__))
+    __attribute__ ((__access__ (__write_only__, 1)));
+
+
+
+
+extern int dup (int __fd) noexcept (true) ;
+
+
+extern int dup2 (int __fd, int __fd2) noexcept (true);
+
+
+
+
+extern int dup3 (int __fd, int __fd2, int __flags) noexcept (true);
+
+
+
+extern char **__environ;
+
+extern char **environ;
+
+
+
+
+
+extern int execve (const char *__path, char *const __argv[],
+     char *const __envp[]) noexcept (true) __attribute__ ((__nonnull__ (1, 2)));
+
+
+
+
+extern int fexecve (int __fd, char *const __argv[], char *const __envp[])
+     noexcept (true) __attribute__ ((__nonnull__ (2)));
+
+
+
+
+extern int execv (const char *__path, char *const __argv[])
+     noexcept (true) __attribute__ ((__nonnull__ (1, 2)));
+
+
+
+extern int execle (const char *__path, const char *__arg, ...)
+     noexcept (true) __attribute__ ((__nonnull__ (1, 2)));
+
+
+
+extern int execl (const char *__path, const char *__arg, ...)
+     noexcept (true) __attribute__ ((__nonnull__ (1, 2)));
+
+
+
+extern int execvp (const char *__file, char *const __argv[])
+     noexcept (true) __attribute__ ((__nonnull__ (1, 2)));
+
+
+
+
+extern int execlp (const char *__file, const char *__arg, ...)
+     noexcept (true) __attribute__ ((__nonnull__ (1, 2)));
+
+
+
+
+extern int execvpe (const char *__file, char *const __argv[],
+      char *const __envp[])
+     noexcept (true) __attribute__ ((__nonnull__ (1, 2)));
+
+
+
+
+
+extern int nice (int __inc) noexcept (true) ;
+
+
+
+
+extern void _exit (int __status) __attribute__ ((__noreturn__));
+
+
+
+
+
+# 1 "/usr/include/aarch64-linux-gnu/bits/confname.h" 1 3 4
+# 24 "/usr/include/aarch64-linux-gnu/bits/confname.h" 3 4
+enum
+  {
+    _PC_LINK_MAX,
+
+    _PC_MAX_CANON,
+
+    _PC_MAX_INPUT,
+
+    _PC_NAME_MAX,
+
+    _PC_PATH_MAX,
+
+    _PC_PIPE_BUF,
+
+    _PC_CHOWN_RESTRICTED,
+
+    _PC_NO_TRUNC,
+
+    _PC_VDISABLE,
+
+    _PC_SYNC_IO,
+
+    _PC_ASYNC_IO,
+
+    _PC_PRIO_IO,
+
+    _PC_SOCK_MAXBUF,
+
+    _PC_FILESIZEBITS,
+
+    _PC_REC_INCR_XFER_SIZE,
+
+    _PC_REC_MAX_XFER_SIZE,
+
+    _PC_REC_MIN_XFER_SIZE,
+
+    _PC_REC_XFER_ALIGN,
+
+    _PC_ALLOC_SIZE_MIN,
+
+    _PC_SYMLINK_MAX,
+
+    _PC_2_SYMLINKS
+
+  };
+
+
+enum
+  {
+    _SC_ARG_MAX,
+
+    _SC_CHILD_MAX,
+
+    _SC_CLK_TCK,
+
+    _SC_NGROUPS_MAX,
+
+    _SC_OPEN_MAX,
+
+    _SC_STREAM_MAX,
+
+    _SC_TZNAME_MAX,
+
+    _SC_JOB_CONTROL,
+
+    _SC_SAVED_IDS,
+
+    _SC_REALTIME_SIGNALS,
+
+    _SC_PRIORITY_SCHEDULING,
+
+    _SC_TIMERS,
+
+    _SC_ASYNCHRONOUS_IO,
+
+    _SC_PRIORITIZED_IO,
+
+    _SC_SYNCHRONIZED_IO,
+
+    _SC_FSYNC,
+
+    _SC_MAPPED_FILES,
+
+    _SC_MEMLOCK,
+
+    _SC_MEMLOCK_RANGE,
+
+    _SC_MEMORY_PROTECTION,
+
+    _SC_MESSAGE_PASSING,
+
+    _SC_SEMAPHORES,
+
+    _SC_SHARED_MEMORY_OBJECTS,
+
+    _SC_AIO_LISTIO_MAX,
+
+    _SC_AIO_MAX,
+
+    _SC_AIO_PRIO_DELTA_MAX,
+
+    _SC_DELAYTIMER_MAX,
+
+    _SC_MQ_OPEN_MAX,
+
+    _SC_MQ_PRIO_MAX,
+
+    _SC_VERSION,
+
+    _SC_PAGESIZE,
+
+
+    _SC_RTSIG_MAX,
+
+    _SC_SEM_NSEMS_MAX,
+
+    _SC_SEM_VALUE_MAX,
+
+    _SC_SIGQUEUE_MAX,
+
+    _SC_TIMER_MAX,
+
+
+
+
+    _SC_BC_BASE_MAX,
+
+    _SC_BC_DIM_MAX,
+
+    _SC_BC_SCALE_MAX,
+
+    _SC_BC_STRING_MAX,
+
+    _SC_COLL_WEIGHTS_MAX,
+
+    _SC_EQUIV_CLASS_MAX,
+
+    _SC_EXPR_NEST_MAX,
+
+    _SC_LINE_MAX,
+
+    _SC_RE_DUP_MAX,
+
+    _SC_CHARCLASS_NAME_MAX,
+
+
+    _SC_2_VERSION,
+
+    _SC_2_C_BIND,
+
+    _SC_2_C_DEV,
+
+    _SC_2_FORT_DEV,
+
+    _SC_2_FORT_RUN,
+
+    _SC_2_SW_DEV,
+
+    _SC_2_LOCALEDEF,
+
+
+    _SC_PII,
+
+    _SC_PII_XTI,
+
+    _SC_PII_SOCKET,
+
+    _SC_PII_INTERNET,
+
+    _SC_PII_OSI,
+
+    _SC_POLL,
+
+    _SC_SELECT,
+
+    _SC_UIO_MAXIOV,
+
+    _SC_IOV_MAX = _SC_UIO_MAXIOV,
+
+    _SC_PII_INTERNET_STREAM,
+
+    _SC_PII_INTERNET_DGRAM,
+
+    _SC_PII_OSI_COTS,
+
+    _SC_PII_OSI_CLTS,
+
+    _SC_PII_OSI_M,
+
+    _SC_T_IOV_MAX,
+
+
+
+    _SC_THREADS,
+
+    _SC_THREAD_SAFE_FUNCTIONS,
+
+    _SC_GETGR_R_SIZE_MAX,
+
+    _SC_GETPW_R_SIZE_MAX,
+
+    _SC_LOGIN_NAME_MAX,
+
+    _SC_TTY_NAME_MAX,
+
+    _SC_THREAD_DESTRUCTOR_ITERATIONS,
+
+    _SC_THREAD_KEYS_MAX,
+
+    _SC_THREAD_STACK_MIN,
+
+    _SC_THREAD_THREADS_MAX,
+
+    _SC_THREAD_ATTR_STACKADDR,
+
+    _SC_THREAD_ATTR_STACKSIZE,
+
+    _SC_THREAD_PRIORITY_SCHEDULING,
+
+    _SC_THREAD_PRIO_INHERIT,
+
+    _SC_THREAD_PRIO_PROTECT,
+
+    _SC_THREAD_PROCESS_SHARED,
+
+
+    _SC_NPROCESSORS_CONF,
+
+    _SC_NPROCESSORS_ONLN,
+
+    _SC_PHYS_PAGES,
+
+    _SC_AVPHYS_PAGES,
+
+    _SC_ATEXIT_MAX,
+
+    _SC_PASS_MAX,
+
+
+    _SC_XOPEN_VERSION,
+
+    _SC_XOPEN_XCU_VERSION,
+
+    _SC_XOPEN_UNIX,
+
+    _SC_XOPEN_CRYPT,
+
+    _SC_XOPEN_ENH_I18N,
+
+    _SC_XOPEN_SHM,
+
+
+    _SC_2_CHAR_TERM,
+
+    _SC_2_C_VERSION,
+
+    _SC_2_UPE,
+
+
+    _SC_XOPEN_XPG2,
+
+    _SC_XOPEN_XPG3,
+
+    _SC_XOPEN_XPG4,
+
+
+    _SC_CHAR_BIT,
+
+    _SC_CHAR_MAX,
+
+    _SC_CHAR_MIN,
+
+    _SC_INT_MAX,
+
+    _SC_INT_MIN,
+
+    _SC_LONG_BIT,
+
+    _SC_WORD_BIT,
+
+    _SC_MB_LEN_MAX,
+
+    _SC_NZERO,
+
+    _SC_SSIZE_MAX,
+
+    _SC_SCHAR_MAX,
+
+    _SC_SCHAR_MIN,
+
+    _SC_SHRT_MAX,
+
+    _SC_SHRT_MIN,
+
+    _SC_UCHAR_MAX,
+
+    _SC_UINT_MAX,
+
+    _SC_ULONG_MAX,
+
+    _SC_USHRT_MAX,
+
+
+    _SC_NL_ARGMAX,
+
+    _SC_NL_LANGMAX,
+
+    _SC_NL_MSGMAX,
+
+    _SC_NL_NMAX,
+
+    _SC_NL_SETMAX,
+
+    _SC_NL_TEXTMAX,
+
+
+    _SC_XBS5_ILP32_OFF32,
+
+    _SC_XBS5_ILP32_OFFBIG,
+
+    _SC_XBS5_LP64_OFF64,
+
+    _SC_XBS5_LPBIG_OFFBIG,
+
+
+    _SC_XOPEN_LEGACY,
+
+    _SC_XOPEN_REALTIME,
+
+    _SC_XOPEN_REALTIME_THREADS,
+
+
+    _SC_ADVISORY_INFO,
+
+    _SC_BARRIERS,
+
+    _SC_BASE,
+
+    _SC_C_LANG_SUPPORT,
+
+    _SC_C_LANG_SUPPORT_R,
+
+    _SC_CLOCK_SELECTION,
+
+    _SC_CPUTIME,
+
+    _SC_THREAD_CPUTIME,
+
+    _SC_DEVICE_IO,
+
+    _SC_DEVICE_SPECIFIC,
+
+    _SC_DEVICE_SPECIFIC_R,
+
+    _SC_FD_MGMT,
+
+    _SC_FIFO,
+
+    _SC_PIPE,
+
+    _SC_FILE_ATTRIBUTES,
+
+    _SC_FILE_LOCKING,
+
+    _SC_FILE_SYSTEM,
+
+    _SC_MONOTONIC_CLOCK,
+
+    _SC_MULTI_PROCESS,
+
+    _SC_SINGLE_PROCESS,
+
+    _SC_NETWORKING,
+
+    _SC_READER_WRITER_LOCKS,
+
+    _SC_SPIN_LOCKS,
+
+    _SC_REGEXP,
+
+    _SC_REGEX_VERSION,
+
+    _SC_SHELL,
+
+    _SC_SIGNALS,
+
+    _SC_SPAWN,
+
+    _SC_SPORADIC_SERVER,
+
+    _SC_THREAD_SPORADIC_SERVER,
+
+    _SC_SYSTEM_DATABASE,
+
+    _SC_SYSTEM_DATABASE_R,
+
+    _SC_TIMEOUTS,
+
+    _SC_TYPED_MEMORY_OBJECTS,
+
+    _SC_USER_GROUPS,
+
+    _SC_USER_GROUPS_R,
+
+    _SC_2_PBS,
+
+    _SC_2_PBS_ACCOUNTING,
+
+    _SC_2_PBS_LOCATE,
+
+    _SC_2_PBS_MESSAGE,
+
+    _SC_2_PBS_TRACK,
+
+    _SC_SYMLOOP_MAX,
+
+    _SC_STREAMS,
+
+    _SC_2_PBS_CHECKPOINT,
+
+
+    _SC_V6_ILP32_OFF32,
+
+    _SC_V6_ILP32_OFFBIG,
+
+    _SC_V6_LP64_OFF64,
+
+    _SC_V6_LPBIG_OFFBIG,
+
+
+    _SC_HOST_NAME_MAX,
+
+    _SC_TRACE,
+
+    _SC_TRACE_EVENT_FILTER,
+
+    _SC_TRACE_INHERIT,
+
+    _SC_TRACE_LOG,
+
+
+    _SC_LEVEL1_ICACHE_SIZE,
+
+    _SC_LEVEL1_ICACHE_ASSOC,
+
+    _SC_LEVEL1_ICACHE_LINESIZE,
+
+    _SC_LEVEL1_DCACHE_SIZE,
+
+    _SC_LEVEL1_DCACHE_ASSOC,
+
+    _SC_LEVEL1_DCACHE_LINESIZE,
+
+    _SC_LEVEL2_CACHE_SIZE,
+
+    _SC_LEVEL2_CACHE_ASSOC,
+
+    _SC_LEVEL2_CACHE_LINESIZE,
+
+    _SC_LEVEL3_CACHE_SIZE,
+
+    _SC_LEVEL3_CACHE_ASSOC,
+
+    _SC_LEVEL3_CACHE_LINESIZE,
+
+    _SC_LEVEL4_CACHE_SIZE,
+
+    _SC_LEVEL4_CACHE_ASSOC,
+
+    _SC_LEVEL4_CACHE_LINESIZE,
+
+
+
+    _SC_IPV6 = _SC_LEVEL1_ICACHE_SIZE + 50,
+
+    _SC_RAW_SOCKETS,
+
+
+    _SC_V7_ILP32_OFF32,
+
+    _SC_V7_ILP32_OFFBIG,
+
+    _SC_V7_LP64_OFF64,
+
+    _SC_V7_LPBIG_OFFBIG,
+
+
+    _SC_SS_REPL_MAX,
+
+
+    _SC_TRACE_EVENT_NAME_MAX,
+
+    _SC_TRACE_NAME_MAX,
+
+    _SC_TRACE_SYS_MAX,
+
+    _SC_TRACE_USER_EVENT_MAX,
+
+
+    _SC_XOPEN_STREAMS,
+
+
+    _SC_THREAD_ROBUST_PRIO_INHERIT,
+
+    _SC_THREAD_ROBUST_PRIO_PROTECT,
+
+
+    _SC_MINSIGSTKSZ,
+
+
+    _SC_SIGSTKSZ
+
+  };
+
+
+enum
+  {
+    _CS_PATH,
+
+
+    _CS_V6_WIDTH_RESTRICTED_ENVS,
+
+
+
+    _CS_GNU_LIBC_VERSION,
+
+    _CS_GNU_LIBPTHREAD_VERSION,
+
+
+    _CS_V5_WIDTH_RESTRICTED_ENVS,
+
+
+
+    _CS_V7_WIDTH_RESTRICTED_ENVS,
+
+
+
+    _CS_LFS_CFLAGS = 1000,
+
+    _CS_LFS_LDFLAGS,
+
+    _CS_LFS_LIBS,
+
+    _CS_LFS_LINTFLAGS,
+
+    _CS_LFS64_CFLAGS,
+
+    _CS_LFS64_LDFLAGS,
+
+    _CS_LFS64_LIBS,
+
+    _CS_LFS64_LINTFLAGS,
+
+
+    _CS_XBS5_ILP32_OFF32_CFLAGS = 1100,
+
+    _CS_XBS5_ILP32_OFF32_LDFLAGS,
+
+    _CS_XBS5_ILP32_OFF32_LIBS,
+
+    _CS_XBS5_ILP32_OFF32_LINTFLAGS,
+
+    _CS_XBS5_ILP32_OFFBIG_CFLAGS,
+
+    _CS_XBS5_ILP32_OFFBIG_LDFLAGS,
+
+    _CS_XBS5_ILP32_OFFBIG_LIBS,
+
+    _CS_XBS5_ILP32_OFFBIG_LINTFLAGS,
+
+    _CS_XBS5_LP64_OFF64_CFLAGS,
+
+    _CS_XBS5_LP64_OFF64_LDFLAGS,
+
+    _CS_XBS5_LP64_OFF64_LIBS,
+
+    _CS_XBS5_LP64_OFF64_LINTFLAGS,
+
+    _CS_XBS5_LPBIG_OFFBIG_CFLAGS,
+
+    _CS_XBS5_LPBIG_OFFBIG_LDFLAGS,
+
+    _CS_XBS5_LPBIG_OFFBIG_LIBS,
+
+    _CS_XBS5_LPBIG_OFFBIG_LINTFLAGS,
+
+
+    _CS_POSIX_V6_ILP32_OFF32_CFLAGS,
+
+    _CS_POSIX_V6_ILP32_OFF32_LDFLAGS,
+
+    _CS_POSIX_V6_ILP32_OFF32_LIBS,
+
+    _CS_POSIX_V6_ILP32_OFF32_LINTFLAGS,
+
+    _CS_POSIX_V6_ILP32_OFFBIG_CFLAGS,
+
+    _CS_POSIX_V6_ILP32_OFFBIG_LDFLAGS,
+
+    _CS_POSIX_V6_ILP32_OFFBIG_LIBS,
+
+    _CS_POSIX_V6_ILP32_OFFBIG_LINTFLAGS,
+
+    _CS_POSIX_V6_LP64_OFF64_CFLAGS,
+
+    _CS_POSIX_V6_LP64_OFF64_LDFLAGS,
+
+    _CS_POSIX_V6_LP64_OFF64_LIBS,
+
+    _CS_POSIX_V6_LP64_OFF64_LINTFLAGS,
+
+    _CS_POSIX_V6_LPBIG_OFFBIG_CFLAGS,
+
+    _CS_POSIX_V6_LPBIG_OFFBIG_LDFLAGS,
+
+    _CS_POSIX_V6_LPBIG_OFFBIG_LIBS,
+
+    _CS_POSIX_V6_LPBIG_OFFBIG_LINTFLAGS,
+
+
+    _CS_POSIX_V7_ILP32_OFF32_CFLAGS,
+
+    _CS_POSIX_V7_ILP32_OFF32_LDFLAGS,
+
+    _CS_POSIX_V7_ILP32_OFF32_LIBS,
+
+    _CS_POSIX_V7_ILP32_OFF32_LINTFLAGS,
+
+    _CS_POSIX_V7_ILP32_OFFBIG_CFLAGS,
+
+    _CS_POSIX_V7_ILP32_OFFBIG_LDFLAGS,
+
+    _CS_POSIX_V7_ILP32_OFFBIG_LIBS,
+
+    _CS_POSIX_V7_ILP32_OFFBIG_LINTFLAGS,
+
+    _CS_POSIX_V7_LP64_OFF64_CFLAGS,
+
+    _CS_POSIX_V7_LP64_OFF64_LDFLAGS,
+
+    _CS_POSIX_V7_LP64_OFF64_LIBS,
+
+    _CS_POSIX_V7_LP64_OFF64_LINTFLAGS,
+
+    _CS_POSIX_V7_LPBIG_OFFBIG_CFLAGS,
+
+    _CS_POSIX_V7_LPBIG_OFFBIG_LDFLAGS,
+
+    _CS_POSIX_V7_LPBIG_OFFBIG_LIBS,
+
+    _CS_POSIX_V7_LPBIG_OFFBIG_LINTFLAGS,
+
+
+    _CS_V6_ENV,
+
+    _CS_V7_ENV
+
+  };
+# 631 "/usr/include/unistd.h" 2 3 4
+
+
+extern long int pathconf (const char *__path, int __name)
+     noexcept (true) __attribute__ ((__nonnull__ (1)));
+
+
+extern long int fpathconf (int __fd, int __name) noexcept (true);
+
+
+extern long int sysconf (int __name) noexcept (true);
+
+
+
+extern size_t confstr (int __name, char *__buf, size_t __len) noexcept (true)
+    __attribute__ ((__access__ (__write_only__, 2, 3)));
+
+
+
+
+extern __pid_t getpid (void) noexcept (true);
+
+
+extern __pid_t getppid (void) noexcept (true);
+
+
+extern __pid_t getpgrp (void) noexcept (true);
+
+
+extern __pid_t __getpgid (__pid_t __pid) noexcept (true);
+
+extern __pid_t getpgid (__pid_t __pid) noexcept (true);
+
+
+
+
+
+
+extern int setpgid (__pid_t __pid, __pid_t __pgid) noexcept (true);
+# 682 "/usr/include/unistd.h" 3 4
+extern int setpgrp (void) noexcept (true);
+
+
+
+
+
+
+extern __pid_t setsid (void) noexcept (true);
+
+
+
+extern __pid_t getsid (__pid_t __pid) noexcept (true);
+
+
+
+extern __uid_t getuid (void) noexcept (true);
+
+
+extern __uid_t geteuid (void) noexcept (true);
+
+
+extern __gid_t getgid (void) noexcept (true);
+
+
+extern __gid_t getegid (void) noexcept (true);
+
+
+
+
+extern int getgroups (int __size, __gid_t __list[]) noexcept (true)
+    __attribute__ ((__access__ (__write_only__, 2, 1)));
+
+
+extern int group_member (__gid_t __gid) noexcept (true);
+
+
+
+
+
+
+extern int setuid (__uid_t __uid) noexcept (true) ;
+
+
+
+
+extern int setreuid (__uid_t __ruid, __uid_t __euid) noexcept (true) ;
+
+
+
+
+extern int seteuid (__uid_t __uid) noexcept (true) ;
+
+
+
+
+
+
+extern int setgid (__gid_t __gid) noexcept (true) ;
+
+
+
+
+extern int setregid (__gid_t __rgid, __gid_t __egid) noexcept (true) ;
+
+
+
+
+extern int setegid (__gid_t __gid) noexcept (true) ;
+
+
+
+
+
+extern int getresuid (__uid_t *__ruid, __uid_t *__euid, __uid_t *__suid)
+     noexcept (true);
+
+
+
+extern int getresgid (__gid_t *__rgid, __gid_t *__egid, __gid_t *__sgid)
+     noexcept (true);
+
+
+
+extern int setresuid (__uid_t __ruid, __uid_t __euid, __uid_t __suid)
+     noexcept (true) ;
+
+
+
+extern int setresgid (__gid_t __rgid, __gid_t __egid, __gid_t __sgid)
+     noexcept (true) ;
+
+
+
+
+
+
+extern __pid_t fork (void) noexcept (true);
+
+
+
+
+
+
+
+extern __pid_t vfork (void) noexcept (true);
+
+
+
+
+
+
+extern __pid_t _Fork (void) noexcept (true);
+
+
+
+
+
+extern char *ttyname (int __fd) noexcept (true);
+
+
+
+extern int ttyname_r (int __fd, char *__buf, size_t __buflen)
+     noexcept (true) __attribute__ ((__nonnull__ (2)))
+     __attribute__ ((__access__ (__write_only__, 2, 3)));
+
+
+
+extern int isatty (int __fd) noexcept (true);
+
+
+
+
+extern int ttyslot (void) noexcept (true);
+
+
+
+
+extern int link (const char *__from, const char *__to)
+     noexcept (true) __attribute__ ((__nonnull__ (1, 2))) ;
+
+
+
+
+extern int linkat (int __fromfd, const char *__from, int __tofd,
+     const char *__to, int __flags)
+     noexcept (true) __attribute__ ((__nonnull__ (2, 4))) ;
+
+
+
+
+extern int symlink (const char *__from, const char *__to)
+     noexcept (true) __attribute__ ((__nonnull__ (1, 2))) ;
+
+
+
+
+extern ssize_t readlink (const char *__restrict __path,
+    char *__restrict __buf, size_t __len)
+     noexcept (true) __attribute__ ((__nonnull__ (1, 2)))
+     __attribute__ ((__access__ (__write_only__, 2, 3)));
+
+
+
+
+
+extern int symlinkat (const char *__from, int __tofd,
+        const char *__to) noexcept (true) __attribute__ ((__nonnull__ (1, 3))) ;
+
+
+extern ssize_t readlinkat (int __fd, const char *__restrict __path,
+      char *__restrict __buf, size_t __len)
+     noexcept (true) __attribute__ ((__nonnull__ (2, 3)))
+     __attribute__ ((__access__ (__write_only__, 3, 4)));
+
+
+
+extern int unlink (const char *__name) noexcept (true) __attribute__ ((__nonnull__ (1)));
+
+
+
+extern int unlinkat (int __fd, const char *__name, int __flag)
+     noexcept (true) __attribute__ ((__nonnull__ (2)));
+
+
+
+extern int rmdir (const char *__path) noexcept (true) __attribute__ ((__nonnull__ (1)));
+
+
+
+extern __pid_t tcgetpgrp (int __fd) noexcept (true);
+
+
+extern int tcsetpgrp (int __fd, __pid_t __pgrp_id) noexcept (true);
+
+
+
+
+
+
+extern char *getlogin (void);
+
+
+
+
+
+
+
+extern int getlogin_r (char *__name, size_t __name_len) __attribute__ ((__nonnull__ (1)))
+    __attribute__ ((__access__ (__write_only__, 1, 2)));
+
+
+
+
+extern int setlogin (const char *__name) noexcept (true) __attribute__ ((__nonnull__ (1)));
+
+
+
+
+
+
+
+# 1 "/usr/include/aarch64-linux-gnu/bits/getopt_posix.h" 1 3 4
+# 27 "/usr/include/aarch64-linux-gnu/bits/getopt_posix.h" 3 4
+# 1 "/usr/include/aarch64-linux-gnu/bits/getopt_core.h" 1 3 4
+# 28 "/usr/include/aarch64-linux-gnu/bits/getopt_core.h" 3 4
+extern "C" {
+
+
+
+
+
+
+
+extern char *optarg;
+# 50 "/usr/include/aarch64-linux-gnu/bits/getopt_core.h" 3 4
+extern int optind;
+
+
+
+
+extern int opterr;
+
+
+
+extern int optopt;
+# 91 "/usr/include/aarch64-linux-gnu/bits/getopt_core.h" 3 4
+extern int getopt (int ___argc, char *const *___argv, const char *__shortopts)
+       noexcept (true) __attribute__ ((__nonnull__ (2, 3)));
+
+}
+# 28 "/usr/include/aarch64-linux-gnu/bits/getopt_posix.h" 2 3 4
+
+extern "C" {
+# 49 "/usr/include/aarch64-linux-gnu/bits/getopt_posix.h" 3 4
+}
+# 904 "/usr/include/unistd.h" 2 3 4
+
+
+
+
+
+
+
+extern int gethostname (char *__name, size_t __len) noexcept (true) __attribute__ ((__nonnull__ (1)))
+    __attribute__ ((__access__ (__write_only__, 1, 2)));
+
+
+
+
+
+
+extern int sethostname (const char *__name, size_t __len)
+     noexcept (true) __attribute__ ((__nonnull__ (1))) __attribute__ ((__access__ (__read_only__, 1, 2)));
+
+
+
+extern int sethostid (long int __id) noexcept (true) ;
+
+
+
+
+
+extern int getdomainname (char *__name, size_t __len)
+     noexcept (true) __attribute__ ((__nonnull__ (1)))
+     __attribute__ ((__access__ (__write_only__, 1, 2)));
+extern int setdomainname (const char *__name, size_t __len)
+     noexcept (true) __attribute__ ((__nonnull__ (1))) __attribute__ ((__access__ (__read_only__, 1, 2)));
+
+
+
+
+extern int vhangup (void) noexcept (true);
+
+
+extern int revoke (const char *__file) noexcept (true) __attribute__ ((__nonnull__ (1))) ;
+
+
+
+
+
+
+
+extern int profil (unsigned short int *__sample_buffer, size_t __size,
+     size_t __offset, unsigned int __scale)
+     noexcept (true) __attribute__ ((__nonnull__ (1)));
+
+
+
+
+
+extern int acct (const char *__name) noexcept (true);
+
+
+
+extern char *getusershell (void) noexcept (true);
+extern void endusershell (void) noexcept (true);
+extern void setusershell (void) noexcept (true);
+
+
+
+
+
+extern int daemon (int __nochdir, int __noclose) noexcept (true) ;
+
+
+
+
+
+
+extern int chroot (const char *__path) noexcept (true) __attribute__ ((__nonnull__ (1))) ;
+
+
+
+extern char *getpass (const char *__prompt) __attribute__ ((__nonnull__ (1)));
+
+
+
+
+
+
+
+extern int fsync (int __fd);
+
+
+
+
+
+extern int syncfs (int __fd) noexcept (true);
+
+
+
+
+
+
+extern long int gethostid (void);
+
+
+extern void sync (void) noexcept (true);
+
+
+
+
+
+extern int getpagesize (void) noexcept (true) __attribute__ ((__const__));
+
+
+
+
+extern int getdtablesize (void) noexcept (true);
+# 1026 "/usr/include/unistd.h" 3 4
+extern int truncate (const char *__file, __off_t __length)
+     noexcept (true) __attribute__ ((__nonnull__ (1))) ;
+# 1038 "/usr/include/unistd.h" 3 4
+extern int truncate64 (const char *__file, __off64_t __length)
+     noexcept (true) __attribute__ ((__nonnull__ (1))) ;
+# 1049 "/usr/include/unistd.h" 3 4
+extern int ftruncate (int __fd, __off_t __length) noexcept (true) ;
+# 1059 "/usr/include/unistd.h" 3 4
+extern int ftruncate64 (int __fd, __off64_t __length) noexcept (true) ;
+# 1070 "/usr/include/unistd.h" 3 4
+extern int brk (void *__addr) noexcept (true) ;
+
+
+
+
+
+extern void *sbrk (intptr_t __delta) noexcept (true);
+# 1091 "/usr/include/unistd.h" 3 4
+extern long int syscall (long int __sysno, ...) noexcept (true);
+# 1142 "/usr/include/unistd.h" 3 4
+ssize_t copy_file_range (int __infd, __off64_t *__pinoff,
+    int __outfd, __off64_t *__poutoff,
+    size_t __length, unsigned int __flags);
+
+
+
+
+
+extern int fdatasync (int __fildes);
+# 1162 "/usr/include/unistd.h" 3 4
+extern char *crypt (const char *__key, const char *__salt)
+     noexcept (true) __attribute__ ((__nonnull__ (1, 2)));
+
+
+
+
+
+
+
+extern void swab (const void *__restrict __from, void *__restrict __to,
+    ssize_t __n) noexcept (true) __attribute__ ((__nonnull__ (1, 2)))
+    __attribute__ ((__access__ (__read_only__, 1, 3)))
+    __attribute__ ((__access__ (__write_only__, 2, 3)));
+# 1201 "/usr/include/unistd.h" 3 4
+int getentropy (void *__buffer, size_t __length)
+    __attribute__ ((__access__ (__write_only__, 1, 2)));
+# 1211 "/usr/include/unistd.h" 3 4
+extern int close_range (unsigned int __fd, unsigned int __max_fd,
+   int __flags) noexcept (true);
+# 1221 "/usr/include/unistd.h" 3 4
+# 1 "/usr/include/aarch64-linux-gnu/bits/unistd_ext.h" 1 3 4
+# 34 "/usr/include/aarch64-linux-gnu/bits/unistd_ext.h" 3 4
+extern __pid_t gettid (void) noexcept (true);
+
+
+
+# 1 "/usr/include/linux/close_range.h" 1 3 4
+# 39 "/usr/include/aarch64-linux-gnu/bits/unistd_ext.h" 2 3 4
+# 1222 "/usr/include/unistd.h" 2 3 4
+
+}
+# 29 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 2
+
+
+
+# 31 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
 class RoomEngine;
 extern RoomEngine* g_engine;
 
-TcpConnection::TcpConnection(int socket)
+TcpConnection::TcpConnection(TcpSocket socket)
     : socket(socket),
       connected(true),
       lastHeartbeat(std::chrono::steady_clock::now())
 {
     if (!SetNonBlocking())
     {
-        std::cerr << "Failed to set client socket " << socket << " to non-blocking mode.\n";
-
+        std::cerr << "Failed to set client socket " << socket
+                  << " to non-blocking mode.\n";
         connected = false;
         return;
     }
@@ -88160,57 +90192,88 @@ TcpConnection::TcpConnection(int socket)
     std::cout << "TcpConnection created for socket " << socket << '\n';
 }
 
-
 TcpConnection::~TcpConnection()
 {
     Close();
 }
-
 
 bool TcpConnection::IsConnected() const
 {
     return connected;
 }
 
-
-int TcpConnection::GetSocket() const
+TcpSocket TcpConnection::GetSocket() const
 {
     return socket;
 }
 
-
 bool TcpConnection::SetNonBlocking()
 {
-# 80 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
-    return false;
-
-
-}
-
-
-bool TcpConnection::Update(std::vector<ModuleMessage>& messages)
-{
-    if (!connected)
+# 76 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+    const int currentFlags = fcntl(socket, 
+# 76 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                                          3
+# 76 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                                                 , 0);
+    if (currentFlags == -1)
     {
+        std::cerr << "fcntl(F_GETFL) failed for socket " << socket
+                  << ", errno " << 
+# 80 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                                  (*__errno_location ()) 
+# 80 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                                        << " (" << std::strerror(
+# 80 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                                                                 (*__errno_location ())
+# 80 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                                                                      ) << ")\n";
+        return false;
+    }
+
+    if (fcntl(socket, 
+# 84 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                     4
+# 84 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                            , currentFlags | 
+# 84 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                                             04000
+# 84 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                                                       ) == -1)
+    {
+        std::cerr << "fcntl(O_NONBLOCK) failed for socket " << socket
+                  << ", errno " << 
+# 87 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                                  (*__errno_location ()) 
+# 87 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                                        << " (" << std::strerror(
+# 87 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                                                                 (*__errno_location ())
+# 87 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                                                                      ) << ")\n";
         return false;
     }
 
 
+    return true;
+}
 
-
-
-
+bool TcpConnection::Update(std::vector<ModuleMessage>& messages)
+{
+    if (!connected)
+        return false;
 
     uint8_t buffer[1024];
 
     while (true)
     {
-        int bytesReceived = recv(
-            static_cast<SOCKET>(socket),
-            reinterpret_cast<char*>(buffer),
+# 112 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+        const ssize_t bytesReceived = recv(
+            socket,
+            buffer,
             sizeof(buffer),
             0
         );
+
 
         if (bytesReceived > 0)
         {
@@ -88219,66 +90282,80 @@ bool TcpConnection::Update(std::vector<ModuleMessage>& messages)
                 buffer,
                 buffer + bytesReceived
             );
-
             continue;
         }
 
 
-
-
-
         if (bytesReceived == 0)
         {
-            std::cout
-                << "Client closed connection: "
-                << socket
-                << '\n';
-
+            std::cout << "Client closed connection: " << socket << '\n';
             Close();
-
             return false;
         }
+# 154 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+        const int error = 
+# 154 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                         (*__errno_location ())
+# 154 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                              ;
 
-
-
-
-        int error = WSAGetLastError();
-
-        if (error == WSAEWOULDBLOCK)
-        {
-
-
-
-
+        if (error == 
+# 156 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                    11 
+# 156 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                                || error == 
+# 156 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                                            11
+# 156 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                                                  )
             break;
-        }
 
-        if (error == WSAECONNRESET ||
-            error == WSAECONNABORTED ||
-            error == WSAENOTCONN)
+        if (error == 
+# 159 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                    104 
+# 159 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                               ||
+            error == 
+# 160 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                    103 
+# 160 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                                 ||
+            error == 
+# 161 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                    107 
+# 161 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                             ||
+            error == 
+# 162 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                    9
+# 162 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                         )
         {
-            std::cout
-                << "Connection lost for socket "
-                << socket
-                << '\n';
-
+            std::cout << "Connection lost for socket " << socket
+                      << " (errno " << error << ": " << std::strerror(error) << ")\n";
             Close();
-
             return false;
         }
 
-        std::cerr
-            << "recv() failed for socket "
-            << socket
-            << " with error "
-            << error
-            << '\n';
+        if (error == 
+# 170 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                    4
+# 170 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                         )
+            continue;
 
+
+        std::cerr << "recv() failed for socket " << socket
+
+
+
+                  << " with errno " << error << " (" << std::strerror(error) << ")"
+
+                  << '\n';
         Close();
-
         return false;
     }
-# 186 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+
     if (!ProcessReceiveBuffer(messages))
     {
         Close();
@@ -88286,12 +90363,9 @@ bool TcpConnection::Update(std::vector<ModuleMessage>& messages)
     }
 
     if (!CheckHeartbeatTimeout())
-    {
         return false;
-    }
 
     return true;
-
 }
 
 bool TcpConnection::ProcessReceiveBuffer(std::vector<ModuleMessage>& messages)
@@ -88299,128 +90373,79 @@ bool TcpConnection::ProcessReceiveBuffer(std::vector<ModuleMessage>& messages)
     while (true)
     {
 
-
-
         if (receiveBuffer.size() < 4)
-        {
             return true;
-        }
 
-
-
-
-        uint32_t messageSize =
+        const uint32_t messageSize =
             (static_cast<uint32_t>(receiveBuffer[0]) << 24) |
             (static_cast<uint32_t>(receiveBuffer[1]) << 16) |
             (static_cast<uint32_t>(receiveBuffer[2]) << 8) |
             static_cast<uint32_t>(receiveBuffer[3]);
 
-
-
-
         if (messageSize == 0 || messageSize > MAX_MESSAGE_SIZE)
         {
-            std::cerr
-                << "Invalid message size from socket "
-                << socket << ": " << messageSize << '\n';
-
+            std::cerr << "Invalid message size from socket "
+                      << socket << ": " << messageSize << '\n';
             return false;
         }
-
-
-
 
         const size_t totalMessageSize = 4 + static_cast<size_t>(messageSize);
-
         if (receiveBuffer.size() < totalMessageSize)
-        {
-
-
-
-
-
             return true;
-        }
-
-
-
 
         ModuleMessage message = {"", 0, {{0, 0, {{0}}}}};
-
         if (!DecodeMessage(receiveBuffer.data() + 4, messageSize, message))
-        {
             return false;
-        }
 
-        if (message.which_payload ==
-            5)
-        {
+        if (message.which_payload == 5)
             HandleHeartbeat(message);
-        }
 
         messages.push_back(message);
 
-
-
-
         receiveBuffer.erase(
             receiveBuffer.begin(),
-            receiveBuffer.begin() + totalMessageSize
+            receiveBuffer.begin() + static_cast<std::ptrdiff_t>(totalMessageSize)
         );
-
-
-
-
-
     }
 }
 
-
-bool TcpConnection::DecodeMessage(const uint8_t* buffer, size_t size, ModuleMessage& message)
+bool TcpConnection::DecodeMessage(
+    const uint8_t* buffer,
+    size_t size,
+    ModuleMessage& message)
 {
     pb_istream_t stream = pb_istream_from_buffer(buffer, size);
 
     if (!pb_decode(&stream, &ModuleMessage_msg, &message))
     {
-        std::cerr
-            << "Failed to decode protobuf on socket "
-            << socket << ": " << ((&stream)->errmsg ? (&stream)->errmsg : "(none)") << '\n';
-
+        std::cerr << "Failed to decode protobuf on socket " << socket
+                  << ": " << ((&stream)->errmsg ? (&stream)->errmsg : "(none)") << '\n';
         return false;
     }
 
-
-
-
-
     return true;
 }
-
 
 bool TcpConnection::Send(const ModuleMessage& message)
 {
     if (!connected)
     {
-        std::cerr << "Cannot send message: socket " << socket << " is not connected.\n";
-
+        std::cerr << "Cannot send message: socket " << socket
+                  << " is not connected.\n";
         return false;
     }
 
     uint8_t buffer[MAX_MESSAGE_SIZE];
-
     pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
 
     if (!pb_encode(&stream, &ModuleMessage_msg, &message))
     {
         std::cerr << "Failed to encode protobuf: " << ((&stream)->errmsg ? (&stream)->errmsg : "(none)") << '\n';
-
         return false;
     }
 
-    uint32_t messageSize = static_cast<uint32_t>(stream.bytes_written);
-
-    uint8_t header[4]
-    {
+    const uint32_t messageSize = static_cast<uint32_t>(stream.bytes_written);
+    const uint8_t header[4] = {
         static_cast<uint8_t>((messageSize >> 24) & 0xFF),
         static_cast<uint8_t>((messageSize >> 16) & 0xFF),
         static_cast<uint8_t>((messageSize >> 8) & 0xFF),
@@ -88430,67 +90455,111 @@ bool TcpConnection::Send(const ModuleMessage& message)
     if (!SendAll(header, sizeof(header)))
     {
         std::cerr << "Failed to send message header on socket " << socket << '\n';
-
         return false;
     }
 
     if (!SendAll(buffer, messageSize))
     {
         std::cerr << "Failed to send protobuf message on socket " << socket << '\n';
-
         return false;
     }
-
-
-
-
 
     return true;
 }
 
-
 bool TcpConnection::SendAll(const uint8_t* buffer, size_t size)
 {
-# 399 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
-    return false;
+    size_t totalSent = 0;
+
+    while (totalSent < size)
+    {
+# 319 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+        const ssize_t bytesSent = send(
+            socket,
+            buffer + totalSent,
+            size - totalSent,
+
+            
+# 324 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+           MSG_NOSIGNAL
 
 
+
+        
+# 328 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+       );
+
+        if (bytesSent < 0)
+        {
+            const int error = 
+# 332 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                             (*__errno_location ())
+# 332 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                                  ;
+            if (error == 
+# 333 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                        4
+# 333 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                             )
+                continue;
+
+            std::cerr << "send() failed on socket " << socket
+                      << " with errno " << error << " (" << std::strerror(error) << ")\n";
+            return false;
+        }
+
+
+        if (bytesSent == 0)
+            return false;
+
+        totalSent += static_cast<size_t>(bytesSent);
+    }
+
+    return true;
 }
 
-void TcpConnection::HandleHeartbeat(const ModuleMessage &message) {
+void TcpConnection::HandleHeartbeat(const ModuleMessage& message)
+{
     lastHeartbeat = std::chrono::steady_clock::now();
-
-
+    (void)message;
 }
 
 bool TcpConnection::CheckHeartbeatTimeout()
 {
     const auto now = std::chrono::steady_clock::now();
-
-    const auto elapsed =std::chrono::duration_cast<std::chrono::seconds>(now - lastHeartbeat);
+    const auto elapsed =
+        std::chrono::duration_cast<std::chrono::seconds>(now - lastHeartbeat);
 
     if (elapsed >= HEARTBEAT_TIMEOUT)
     {
-        std::cout << "Heartbeat timeout for socket " << socket << " (" << elapsed.count() << " seconds)\n";
-
+        std::cout << "Heartbeat timeout for socket " << socket
+                  << " (" << elapsed.count() << " seconds)\n";
         Close();
-
         return false;
     }
 
     return true;
 }
 
-
 void TcpConnection::Close()
 {
     if (!connected)
-    {
         return;
-    }
 
     std::cout << "Closing TCP connection: " << socket << '\n';
-# 450 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+
+
+
+
+
+    shutdown(socket, 
+# 385 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp" 3 4
+                    SHUT_RDWR
+# 385 "/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp"
+                             );
+    close(socket);
+
+
     connected = false;
     socket = -1;
     receiveBuffer.clear();

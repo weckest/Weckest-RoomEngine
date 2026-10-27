@@ -123,7 +123,6 @@ build generate_proto: phony CMakeFiles/generate_proto
 build cmake_object_order_depends_target_RoomEngine: phony || cmake_object_order_depends_target_render_proto generate_proto
 
 build CMakeFiles/RoomEngine.dir/src/main.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/main.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/main.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/main.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -133,7 +132,6 @@ build CMakeFiles/RoomEngine.dir/src/main.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /
 
 build CMakeFiles/RoomEngine.dir/src/main.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/main.cpp | CMakeFiles/RoomEngine.dir/src/main.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/main.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/main.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -144,7 +142,6 @@ build CMakeFiles/RoomEngine.dir/src/main.cpp.o: CXX_COMPILER__RoomEngine_scanned
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -154,7 +151,6 @@ build CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o.ddi: CXX_SCAN__R
 
 build CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPConnection.cpp | CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -165,7 +161,6 @@ build CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o: CXX_COMPILER__R
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/network/TCPServer.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPServer.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/network/TCPServer.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/network/TCPServer.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -175,7 +170,6 @@ build CMakeFiles/RoomEngine.dir/src/network/TCPServer.cpp.o.ddi: CXX_SCAN__RoomE
 
 build CMakeFiles/RoomEngine.dir/src/network/TCPServer.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/network/TCPServer.cpp | CMakeFiles/RoomEngine.dir/src/network/TCPServer.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/network/TCPServer.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/network/TCPServer.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -187,7 +181,6 @@ build CMakeFiles/RoomEngine.dir/src/network/TCPServer.cpp.o: CXX_COMPILER__RoomE
 
 build CMakeFiles/RoomEngine.dir/src/generated/hardware.pb.c.o: C_COMPILER__RoomEngine_unscanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/generated/hardware.pb.c || cmake_object_order_depends_target_RoomEngine
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/generated/hardware.pb.c.o.d
   FLAGS = -g -pthread -DNOMINMAX
   INCLUDES = -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/src -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/generated -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/tools/nanopb-0.4.9.2-windows-x86 -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/build
@@ -196,7 +189,6 @@ build CMakeFiles/RoomEngine.dir/src/generated/hardware.pb.c.o: C_COMPILER__RoomE
   TARGET_SUPPORT_DIR = CMakeFiles/RoomEngine.dir
 
 build CMakeFiles/RoomEngine.dir/src/services/ModuleService.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/services/ModuleService.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/services/ModuleService.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/services/ModuleService.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -206,7 +198,6 @@ build CMakeFiles/RoomEngine.dir/src/services/ModuleService.cpp.o.ddi: CXX_SCAN__
 
 build CMakeFiles/RoomEngine.dir/src/services/ModuleService.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/services/ModuleService.cpp | CMakeFiles/RoomEngine.dir/src/services/ModuleService.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/services/ModuleService.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/services/ModuleService.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -218,7 +209,6 @@ build CMakeFiles/RoomEngine.dir/src/services/ModuleService.cpp.o: CXX_COMPILER__
 
 build CMakeFiles/RoomEngine.dir/tools/nanopb-0.4.9.2-windows-x86/pb_common.c.o: C_COMPILER__RoomEngine_unscanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/tools/nanopb-0.4.9.2-windows-x86/pb_common.c || cmake_object_order_depends_target_RoomEngine
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/tools/nanopb-0.4.9.2-windows-x86/pb_common.c.o.d
   FLAGS = -g -pthread -DNOMINMAX
   INCLUDES = -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/src -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/generated -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/tools/nanopb-0.4.9.2-windows-x86 -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/build
@@ -228,7 +218,6 @@ build CMakeFiles/RoomEngine.dir/tools/nanopb-0.4.9.2-windows-x86/pb_common.c.o: 
 
 build CMakeFiles/RoomEngine.dir/tools/nanopb-0.4.9.2-windows-x86/pb_encode.c.o: C_COMPILER__RoomEngine_unscanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/tools/nanopb-0.4.9.2-windows-x86/pb_encode.c || cmake_object_order_depends_target_RoomEngine
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/tools/nanopb-0.4.9.2-windows-x86/pb_encode.c.o.d
   FLAGS = -g -pthread -DNOMINMAX
   INCLUDES = -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/src -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/generated -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/tools/nanopb-0.4.9.2-windows-x86 -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/build
@@ -238,7 +227,6 @@ build CMakeFiles/RoomEngine.dir/tools/nanopb-0.4.9.2-windows-x86/pb_encode.c.o: 
 
 build CMakeFiles/RoomEngine.dir/tools/nanopb-0.4.9.2-windows-x86/pb_decode.c.o: C_COMPILER__RoomEngine_unscanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/tools/nanopb-0.4.9.2-windows-x86/pb_decode.c || cmake_object_order_depends_target_RoomEngine
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/tools/nanopb-0.4.9.2-windows-x86/pb_decode.c.o.d
   FLAGS = -g -pthread -DNOMINMAX
   INCLUDES = -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/src -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/src/generated -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/tools/nanopb-0.4.9.2-windows-x86 -I/home/weckest/Documents/Weckest/Weckest-RoomEngine/build
@@ -247,7 +235,6 @@ build CMakeFiles/RoomEngine.dir/tools/nanopb-0.4.9.2-windows-x86/pb_decode.c.o: 
   TARGET_SUPPORT_DIR = CMakeFiles/RoomEngine.dir
 
 build CMakeFiles/RoomEngine.dir/src/utils/Vector3D.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/utils/Vector3D.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/utils/Vector3D.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/utils/Vector3D.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -257,7 +244,6 @@ build CMakeFiles/RoomEngine.dir/src/utils/Vector3D.cpp.o.ddi: CXX_SCAN__RoomEngi
 
 build CMakeFiles/RoomEngine.dir/src/utils/Vector3D.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/utils/Vector3D.cpp | CMakeFiles/RoomEngine.dir/src/utils/Vector3D.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/utils/Vector3D.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/utils/Vector3D.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -268,7 +254,6 @@ build CMakeFiles/RoomEngine.dir/src/utils/Vector3D.cpp.o: CXX_COMPILER__RoomEngi
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/engine/RoomEngine.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/engine/RoomEngine.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/engine/RoomEngine.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/engine/RoomEngine.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -278,7 +263,6 @@ build CMakeFiles/RoomEngine.dir/src/engine/RoomEngine.cpp.o.ddi: CXX_SCAN__RoomE
 
 build CMakeFiles/RoomEngine.dir/src/engine/RoomEngine.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/engine/RoomEngine.cpp | CMakeFiles/RoomEngine.dir/src/engine/RoomEngine.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/engine/RoomEngine.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/engine/RoomEngine.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -289,7 +273,6 @@ build CMakeFiles/RoomEngine.dir/src/engine/RoomEngine.cpp.o: CXX_COMPILER__RoomE
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/World.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/World.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/World.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/World.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -299,7 +282,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/World.cpp.o.ddi: CXX_SCAN__RoomEngine_De
 
 build CMakeFiles/RoomEngine.dir/src/ecs/World.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/World.cpp | CMakeFiles/RoomEngine.dir/src/ecs/World.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/World.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/World.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -310,7 +292,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/World.cpp.o: CXX_COMPILER__RoomEngine_sc
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/LightSystem.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/LightSystem.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/LightSystem.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/LightSystem.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -320,7 +301,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/LightSystem.cpp.o.ddi: CXX_SCAN_
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/LightSystem.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/LightSystem.cpp | CMakeFiles/RoomEngine.dir/src/ecs/systems/LightSystem.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/LightSystem.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/LightSystem.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -331,7 +311,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/LightSystem.cpp.o: CXX_COMPILER_
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/managers/RoomEventManager.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/RoomEventManager.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/RoomEventManager.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/RoomEventManager.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -341,7 +320,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/managers/RoomEventManager.cpp.o.ddi: CXX
 
 build CMakeFiles/RoomEngine.dir/src/ecs/managers/RoomEventManager.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/RoomEventManager.cpp | CMakeFiles/RoomEngine.dir/src/ecs/managers/RoomEventManager.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/RoomEventManager.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/RoomEventManager.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -352,7 +330,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/managers/RoomEventManager.cpp.o: CXX_COM
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/managers/ActionManager.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/ActionManager.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/ActionManager.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/ActionManager.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -362,7 +339,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/managers/ActionManager.cpp.o.ddi: CXX_SC
 
 build CMakeFiles/RoomEngine.dir/src/ecs/managers/ActionManager.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/ActionManager.cpp | CMakeFiles/RoomEngine.dir/src/ecs/managers/ActionManager.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/ActionManager.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/ActionManager.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -373,7 +349,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/managers/ActionManager.cpp.o: CXX_COMPIL
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventSystem.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/RoomEventSystem.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventSystem.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventSystem.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -383,7 +358,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventSystem.cpp.o.ddi: CXX_S
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventSystem.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/RoomEventSystem.cpp | CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventSystem.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventSystem.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventSystem.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -394,7 +368,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventSystem.cpp.o: CXX_COMPI
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/services/visuals/RenderServiceClient.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/services/visuals/RenderServiceClient.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/services/visuals/RenderServiceClient.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/services/visuals/RenderServiceClient.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -404,7 +377,6 @@ build CMakeFiles/RoomEngine.dir/src/services/visuals/RenderServiceClient.cpp.o.d
 
 build CMakeFiles/RoomEngine.dir/src/services/visuals/RenderServiceClient.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/services/visuals/RenderServiceClient.cpp | CMakeFiles/RoomEngine.dir/src/services/visuals/RenderServiceClient.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/services/visuals/RenderServiceClient.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/services/visuals/RenderServiceClient.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -415,7 +387,6 @@ build CMakeFiles/RoomEngine.dir/src/services/visuals/RenderServiceClient.cpp.o: 
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/managers/ModuleManager.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/ModuleManager.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/ModuleManager.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/ModuleManager.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -425,7 +396,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/managers/ModuleManager.cpp.o.ddi: CXX_SC
 
 build CMakeFiles/RoomEngine.dir/src/ecs/managers/ModuleManager.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/ModuleManager.cpp | CMakeFiles/RoomEngine.dir/src/ecs/managers/ModuleManager.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/ModuleManager.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/ModuleManager.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -436,7 +406,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/managers/ModuleManager.cpp.o: CXX_COMPIL
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/MovementSystem.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/MovementSystem.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/MovementSystem.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/MovementSystem.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -446,7 +415,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/MovementSystem.cpp.o.ddi: CXX_SC
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/MovementSystem.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/MovementSystem.cpp | CMakeFiles/RoomEngine.dir/src/ecs/systems/MovementSystem.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/MovementSystem.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/MovementSystem.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -457,7 +425,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/MovementSystem.cpp.o: CXX_COMPIL
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/managers/SystemManager.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/SystemManager.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/SystemManager.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/SystemManager.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -467,7 +434,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/managers/SystemManager.cpp.o.ddi: CXX_SC
 
 build CMakeFiles/RoomEngine.dir/src/ecs/managers/SystemManager.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/managers/SystemManager.cpp | CMakeFiles/RoomEngine.dir/src/ecs/managers/SystemManager.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/SystemManager.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/managers/SystemManager.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -478,7 +444,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/managers/SystemManager.cpp.o: CXX_COMPIL
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/ColorSystem.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/ColorSystem.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/ColorSystem.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/ColorSystem.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -488,7 +453,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/ColorSystem.cpp.o.ddi: CXX_SCAN_
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/ColorSystem.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/ColorSystem.cpp | CMakeFiles/RoomEngine.dir/src/ecs/systems/ColorSystem.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/ColorSystem.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/ColorSystem.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -499,7 +463,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/ColorSystem.cpp.o: CXX_COMPILER_
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/RenderSystem.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/RenderSystem.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RenderSystem.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RenderSystem.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -509,7 +472,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/RenderSystem.cpp.o.ddi: CXX_SCAN
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/RenderSystem.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/RenderSystem.cpp | CMakeFiles/RoomEngine.dir/src/ecs/systems/RenderSystem.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RenderSystem.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RenderSystem.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -520,7 +482,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/RenderSystem.cpp.o: CXX_COMPILER
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/CombatSystem.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/CombatSystem.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/CombatSystem.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/CombatSystem.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -530,7 +491,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/CombatSystem.cpp.o.ddi: CXX_SCAN
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/CombatSystem.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/CombatSystem.cpp | CMakeFiles/RoomEngine.dir/src/ecs/systems/CombatSystem.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/CombatSystem.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/CombatSystem.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -541,7 +501,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/CombatSystem.cpp.o: CXX_COMPILER
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/HealthSystem.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/HealthSystem.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/HealthSystem.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/HealthSystem.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -551,7 +510,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/HealthSystem.cpp.o.ddi: CXX_SCAN
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/HealthSystem.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/HealthSystem.cpp | CMakeFiles/RoomEngine.dir/src/ecs/systems/HealthSystem.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/HealthSystem.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/HealthSystem.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -562,7 +520,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/HealthSystem.cpp.o: CXX_COMPILER
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/WaitSystem.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/WaitSystem.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/WaitSystem.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/WaitSystem.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -572,7 +529,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/WaitSystem.cpp.o.ddi: CXX_SCAN__
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/WaitSystem.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/WaitSystem.cpp | CMakeFiles/RoomEngine.dir/src/ecs/systems/WaitSystem.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/WaitSystem.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/WaitSystem.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -583,7 +539,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/WaitSystem.cpp.o: CXX_COMPILER__
   dyndep = CMakeFiles/RoomEngine.dir/CXX.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventCooldownSystem.cpp.o.ddi: CXX_SCAN__RoomEngine_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/RoomEventCooldownSystem.cpp || cmake_object_order_depends_target_RoomEngine
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventCooldownSystem.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventCooldownSystem.cpp.o.ddi
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX
@@ -593,7 +548,6 @@ build CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventCooldownSystem.cpp.o.dd
 
 build CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventCooldownSystem.cpp.o: CXX_COMPILER__RoomEngine_scanned_Debug /home/weckest/Documents/Weckest/Weckest-RoomEngine/src/ecs/systems/RoomEventCooldownSystem.cpp | CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventCooldownSystem.cpp.o.modmap || cmake_object_order_depends_target_RoomEngine CMakeFiles/RoomEngine.dir/CXX.dd
   CONFIG = Debug
-  DEFINES = -DNOMINMAX -DWIN32_LEAN_AND_MEAN
   DEP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventCooldownSystem.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventCooldownSystem.cpp.o.modmap
   FLAGS = -g -std=c++20 -pthread -DNOMINMAX

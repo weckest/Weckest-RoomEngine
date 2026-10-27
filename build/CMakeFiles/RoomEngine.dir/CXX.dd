@@ -1,0 +1,43 @@
+ninja_dyndep_version = 1.0
+build CMakeFiles/RoomEngine.dir/src/main.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/network/TCPConnection.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/network/TCPServer.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/services/ModuleService.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/utils/Vector3D.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/engine/RoomEngine.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/World.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/systems/LightSystem.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/managers/RoomEventManager.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/managers/ActionManager.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventSystem.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/services/visuals/RenderServiceClient.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/managers/ModuleManager.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/systems/MovementSystem.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/managers/SystemManager.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/systems/ColorSystem.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/systems/RenderSystem.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/systems/CombatSystem.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/systems/HealthSystem.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/systems/WaitSystem.cpp.o: dyndep
+
+build CMakeFiles/RoomEngine.dir/src/ecs/systems/RoomEventCooldownSystem.cpp.o: dyndep
+
