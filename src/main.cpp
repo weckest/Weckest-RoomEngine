@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <csignal>
 
@@ -10,28 +9,16 @@
     #endif
     #include <windows.h>
 #else
+    #include <pthread.h>
     #include <signal.h>
+    #include <thread>
 #endif
 
-// Must remain at global scope for ModuleService.cpp.
+// Must remain at global scope because ModuleService.cpp uses extern.
 RoomEngine* g_engine = nullptr;
 
-#ifndef _WIN32
-namespace
-{
-    volatile std::sig_atomic_t g_shutdownRequested = 0;
-
-    void SignalHandler(int signal)
-    {
-        if (signal == SIGINT || signal == SIGTERM)
-        {
-            g_shutdownRequested = 1;
-        }
-    }
-}
-#endif
-
 #ifdef _WIN32
+
 BOOL WINAPI ConsoleHandler(DWORD signal)
 {
     switch (signal)
@@ -51,11 +38,27 @@ BOOL WINAPI ConsoleHandler(DWORD signal)
             return FALSE;
     }
 }
+
 #endif
 
 int main()
 {
     std::cout << "Starting RoomEngine...\n";
+
+#ifndef _WIN32
+    // Block shutdown signals so the dedicated thread can receive them
+    // synchronously using sigwait().
+    sigset_t signals;
+    sigemptyset(&signals);
+    sigaddset(&signals, SIGINT);
+    sigaddset(&signals, SIGTERM);
+
+    if (pthread_sigmask(SIG_BLOCK, &signals, nullptr) != 0)
+    {
+        std::cerr << "Failed to block shutdown signals\n";
+        return 1;
+    }
+#endif
 
     RoomEngine engine(5001);
     g_engine = &engine;
@@ -64,19 +67,6 @@ int main()
     if (!SetConsoleCtrlHandler(ConsoleHandler, TRUE))
     {
         std::cerr << "Failed to install console handler\n";
-        g_engine = nullptr;
-        return 1;
-    }
-#else
-    struct sigaction action{};
-    action.sa_handler = SignalHandler;
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-
-    if (sigaction(SIGINT, &action, nullptr) == -1 ||
-        sigaction(SIGTERM, &action, nullptr) == -1)
-    {
-        std::cerr << "Failed to install signal handlers\n";
         g_engine = nullptr;
         return 1;
     }
@@ -94,17 +84,27 @@ int main()
         return 1;
     }
 
-#ifdef _WIN32
-    // The console handler calls Stop() when Ctrl+C is pressed.
-    engine.Run();
-#else
-    // Linux signal handlers only set a flag.
-    while (!g_shutdownRequested)
+#ifndef _WIN32
+    std::thread shutdownThread([&engine, &signals]()
     {
-        engine.Run();
-    }
+        int signal = 0;
 
-    engine.Stop();
+        if (sigwait(&signals, &signal) == 0)
+        {
+            std::cout << "\nShutdown signal received.\n";
+            engine.Stop();
+        }
+    });
+
+    // Run owns the engine's update loop and returns when Stop() ends it.
+    engine.Run();
+
+    // Run has returned, so ensure the shutdown thread has finished.
+    shutdownThread.join();
+
+#else
+    // The Windows console handler calls Stop() when Ctrl+C is pressed.
+    engine.Run();
 #endif
 
 #ifdef _WIN32
