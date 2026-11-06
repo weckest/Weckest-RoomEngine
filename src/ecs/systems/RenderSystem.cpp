@@ -37,4 +37,46 @@ RenderSystem::RenderSystem(World &world) {
 
             return 1;
         }, {"r", "g", "b", "a"});
+
+    world.getSystemManager().addOperation("render.text",
+        [](ActionContext& context, World& world) {
+            if (!context.hasParameter("text")) return -1;
+
+            // std::cout << *context.getParameter<std::string>("text") << std::endl;
+            capstone::render::RenderEvent event;
+            event.set_type(capstone::render::RENDER_DISPLAY_MESSAGE);
+            auto dm = event.mutable_display_message();
+            dm->set_message(*context.getParameter<std::string>("text"));
+            world.getRenderService().SendEvent(event);
+
+            return 1;
+        }, {"text"});
+
+    world.getSystemManager().addOperation("render.actions",
+        [](ActionContext& context, World& world) {
+            auto* inputContext = world.getActionManager().getCurrentContext();
+            capstone::render::RenderEvent event;
+            event.set_type(capstone::render::RENDER_MODULE_MAPPING);
+            auto mm = event.mutable_module_mapping();
+            for (auto& action : inputContext->actions) {
+                if (action.inputId == 1) {
+                    mm->set_select(action.actionType);
+                }
+                if (action.inputId == 3) {
+                    mm->set_top(action.actionType);
+                }
+                if (action.inputId == 4) {
+                    mm->set_bottom(action.actionType);
+                }
+                if (action.inputId == 5) {
+                    mm->set_left(action.actionType);
+                }
+                if (action.inputId == 6) {
+                    mm->set_right(action.actionType);
+                }
+            }
+
+            world.getRenderService().SendEvent(event);
+            return 1;
+        });
 }

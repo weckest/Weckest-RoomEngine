@@ -122,6 +122,11 @@ add_executable(RoomEngine
 		src/ecs/systems/HealthSystem.cpp
 		src/ecs/systems/WaitSystem.cpp
 		src/ecs/systems/RoomEventCooldownSystem.cpp
+		src/ecs/systems/SceneSystem.cpp
+		src/ecs/systems/SpawnSystem.cpp
+		src/ecs/systems/ContextSystem.cpp
+		src/ecs/systems/BlockSystem.cpp
+		src/ecs/systems/EnemySystem.cpp
 )
 
 add_dependencies(RoomEngine generate_proto)

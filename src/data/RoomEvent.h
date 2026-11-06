@@ -12,9 +12,10 @@
 struct RoomEvent {
     std::string name;
     std::vector<Action> actions;
-    std::vector<ActionType> requirements;
+    std::vector<std::string> requirements;
     std::vector<std::string> operations;
-    std::vector<OutputAction> outputActions;
+    std::vector<std::string> outputActions;
+    std::unordered_map<std::string, std::string> parameters;
     bool ready;
     float cooldown;
     float currentCooldown;

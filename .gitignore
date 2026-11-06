@@ -1,0 +1,16 @@
+# CMake build folders
+cmake-build-debug/
+cmake-build-release/
+build/
+
+# CLion
+.idea/
+.idea/editor.xml
+
+# macOS
+.DS_Store
+
+# Compiled objects
+*.o
+*.obj
+*.exe

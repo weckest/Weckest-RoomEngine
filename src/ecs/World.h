@@ -16,14 +16,19 @@
 #include "managers/SystemManager.h"
 #include "network/TCPServer.h"
 #include "services/visuals/RenderServiceClient.h"
+#include "systems/BlockSystem.h"
 #include "systems/ColorSystem.h"
 #include "systems/CombatSystem.h"
+#include "systems/ContextSystem.h"
+#include "systems/EnemySystem.h"
 #include "systems/HealthSystem.h"
 #include "systems/LightSystem.h"
 #include "systems/MovementSystem.h"
 #include "systems/RenderSystem.h"
 #include "systems/RoomEventCooldownSystem.h"
 #include "systems/RoomEventSystem.h"
+#include "systems/SceneSystem.h"
+#include "systems/SpawnSystem.h"
 #include "systems/WaitSystem.h"
 
 
@@ -52,13 +57,18 @@ class World {
     HealthSystem healthSystem{*this};
     WaitSystem waitSystem{*this};
     RoomEventCooldownSystem roomEventCooldownSystem;
+    SceneSystem sceneSystem{*this};
+    SpawnSystem spawnSystem{*this};
+    ContextSystem contextSystem{*this};
+    BlockSystem blockSystem{*this};
+    EnemySystem enemySystem{*this};
 
 public:
     World(TcpServer& tcpServer);
 
     void Update(float dt) {
         lightSystem.update(entities);
-        roomEventCooldownSystem.update(*this);
+        roomEventCooldownSystem.update(*this, dt);
         roomEventSystem.update(*this, dt);
 
         movementSystem.update(*this, dt);
@@ -159,6 +169,11 @@ public:
     SystemManager& getSystemManager() {
         return systemManager;
     }
+
+private:
+    void setupMenuInputs(Module &module);
+    void setupBattleAttackInputs(Module &module);
+    void setupBattleHealInputs(Module &module);
 };
 
 

@@ -8,26 +8,19 @@
 #include "ecs/World.h"
 
 MovementSystem::MovementSystem(World &world) {
-    world.getSystemManager().addOperation("movement.up",
+    world.getSystemManager().addOperation("movement.up.start",
         [](ActionContext& context, World& world) {
             if (!context.source) return -1;
 
             auto& source = context.source;
 
             auto& sourceVelocity = source.value()->getComponent<Velocity>();
-
-            //if called while moving stop player. works for calling when button released
-            //(no way to press the button while button is already pressed)
-            if (sourceVelocity.direction.y != 0.0f) {
-                sourceVelocity.direction.y = 0.0f;
-                return 1;
-            }
 
             sourceVelocity.direction.y = std::clamp(sourceVelocity.direction.y += 0.2f, -1.0f, 1.0f);
             return 1;
         });
 
-    world.getSystemManager().addOperation("movement.down",
+    world.getSystemManager().addOperation("movement.up.stop",
         [](ActionContext& context, World& world) {
             if (!context.source) return -1;
 
@@ -35,16 +28,23 @@ MovementSystem::MovementSystem(World &world) {
 
             auto& sourceVelocity = source.value()->getComponent<Velocity>();
 
-            if (sourceVelocity.direction.y != 0.0f) {
-                sourceVelocity.direction.y = 0.0f;
-                return 1;
-            }
+            sourceVelocity.direction.y = 0.0f;
+            return 1;
+        });
+
+    world.getSystemManager().addOperation("movement.down.start",
+        [](ActionContext& context, World& world) {
+            if (!context.source) return -1;
+
+            auto& source = context.source;
+
+            auto& sourceVelocity = source.value()->getComponent<Velocity>();
 
             sourceVelocity.direction.y = std::clamp(sourceVelocity.direction.y -= 0.2f, -1.0f, 1.0f);
             return 1;
     });
 
-    world.getSystemManager().addOperation("movement.left",
+    world.getSystemManager().addOperation("movement.down.stop",
         [](ActionContext& context, World& world) {
             if (!context.source) return -1;
 
@@ -52,17 +52,23 @@ MovementSystem::MovementSystem(World &world) {
 
             auto& sourceVelocity = source.value()->getComponent<Velocity>();
 
-            if (sourceVelocity.direction.x != 0.0f) {
-                sourceVelocity.direction.x = 0.0f;
-                return 1;
-            }
+            sourceVelocity.direction.y = 0.0f;
+            return 1;
+    });
 
+    world.getSystemManager().addOperation("movement.left.start",
+        [](ActionContext& context, World& world) {
+            if (!context.source) return -1;
+
+            auto& source = context.source;
+
+            auto& sourceVelocity = source.value()->getComponent<Velocity>();
 
             sourceVelocity.direction.x = std::clamp(sourceVelocity.direction.x -= 0.2f, -1.0f, 1.0f);
             return 1;
         });
 
-    world.getSystemManager().addOperation("movement.right",
+    world.getSystemManager().addOperation("movement.left.stop",
         [](ActionContext& context, World& world) {
             if (!context.source) return -1;
 
@@ -70,16 +76,23 @@ MovementSystem::MovementSystem(World &world) {
 
             auto& sourceVelocity = source.value()->getComponent<Velocity>();
 
-            if (sourceVelocity.direction.x != 0.0f) {
-                sourceVelocity.direction.x = 0.0f;
-                return 1;
-            }
+            sourceVelocity.direction.x = 0.0f;
+            return 1;
+        });
+
+    world.getSystemManager().addOperation("movement.right.start",
+        [](ActionContext& context, World& world) {
+            if (!context.source) return -1;
+
+            auto& source = context.source;
+
+            auto& sourceVelocity = source.value()->getComponent<Velocity>();
 
             sourceVelocity.direction.x = std::clamp(sourceVelocity.direction.x += 0.2f, -1.0f, 1.0f);
             return 1;
         });
 
-    world.getSystemManager().addOperation("movement.forward",
+    world.getSystemManager().addOperation("movement.right.stop",
         [](ActionContext& context, World& world) {
             if (!context.source) return -1;
 
@@ -87,16 +100,23 @@ MovementSystem::MovementSystem(World &world) {
 
             auto& sourceVelocity = source.value()->getComponent<Velocity>();
 
-            if (sourceVelocity.direction.z != 0.0f) {
-                sourceVelocity.direction.z = 0.0f;
-                return 1;
-            }
+            sourceVelocity.direction.x = 0.0f;
+            return 1;
+        });
+
+    world.getSystemManager().addOperation("movement.forward.start",
+        [](ActionContext& context, World& world) {
+            if (!context.source) return -1;
+
+            auto& source = context.source;
+
+            auto& sourceVelocity = source.value()->getComponent<Velocity>();
 
             sourceVelocity.direction.z = std::clamp(sourceVelocity.direction.z += 0.2f, -1.0f, 1.0f);
             return 1;
         });
 
-    world.getSystemManager().addOperation("movement.backward",
+    world.getSystemManager().addOperation("movement.forward.stop",
         [](ActionContext& context, World& world) {
             if (!context.source) return -1;
 
@@ -104,14 +124,33 @@ MovementSystem::MovementSystem(World &world) {
 
             auto& sourceVelocity = source.value()->getComponent<Velocity>();
 
-            if (sourceVelocity.direction.z != 0.0f) {
-                sourceVelocity.direction.z = 0.0f;
-                return 1;
-            }
+            sourceVelocity.direction.z = 0.0f;
+            return 1;
+        });
+
+    world.getSystemManager().addOperation("movement.backward.start",
+        [](ActionContext& context, World& world) {
+            if (!context.source) return -1;
+
+            auto& source = context.source;
+
+            auto& sourceVelocity = source.value()->getComponent<Velocity>();
 
             sourceVelocity.direction.z = std::clamp(sourceVelocity.direction.z -= 0.2f, -1.0f, 1.0f);
             return 1;
         });
+
+    world.getSystemManager().addOperation("movement.backward.stop",
+       [](ActionContext& context, World& world) {
+           if (!context.source) return -1;
+
+           auto& source = context.source;
+
+           auto& sourceVelocity = source.value()->getComponent<Velocity>();
+
+           sourceVelocity.direction.z = 0.0f;
+           return 1;
+       });
 }
 
 void MovementSystem::update(World &world, float dt) {
@@ -131,7 +170,7 @@ void MovementSystem::update(World &world, float dt) {
 
             if (e->hasComponent<Tag>() && e->getComponent<Tag>().rendered) {
                 if (transform.position != transform.oldPosition) {
-                    std::cout << "Entity moved, calling renderer" << std::endl;
+                    // std::cout << "Entity moved, calling renderer" << std::endl;
                     world.getRenderService().EntityMoved(e->getComponent<Tag>().tag, transform);
                 }
             }

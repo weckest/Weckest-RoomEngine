@@ -12,10 +12,12 @@
 
 void RoomEventManager::addRoomEvent(
     std::string name,
-    std::vector<ActionType> requirements,
+    std::vector<std::string> requirements,
     std::vector<std::string> operations,
-    std::vector<OutputAction> outputActions,
-    float cooldown) {
+    std::vector<std::string> outputActions,
+    float cooldown,
+    std::unordered_map<std::string, std::string> parameters
+) {
     std::cout << "Adding Room Event: " << name << std::endl;
     RoomEvent re = RoomEvent();
 
@@ -40,8 +42,22 @@ void RoomEventManager::addRoomEvent(
 
     re.cooldown = cooldown;
 
+    re.parameters = parameters;
+
     roomEvents.insert({name, re});
 
-    std::cout << name << " Room Event Added" << std::endl;
+    // std::cout << name << " Room Event Added" << std::endl;
+
+}
+
+void RoomEventManager::triggerRoomEvent(std::string name) {
+    auto roomEvent = roomEvents.find(name);
+    if (roomEvent != roomEvents.end()) {
+        std::cout << "Triggering: " << roomEvent->second.name << std::endl;
+        for (std::string requirement : roomEvent->second.requirements) {
+            std::cout << " Adding requirement: " << requirement << std::endl;
+            roomEvent->second.actions.emplace_back(Action{"", nullptr, requirement});
+        }
+    }
 
 }

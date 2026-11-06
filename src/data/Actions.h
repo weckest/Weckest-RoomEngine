@@ -12,6 +12,7 @@ class Entity;
 
 enum ActionType {
     GENERAL,
+    TEST,
     MOVEUP,
     MOVEDOWN,
     MOVELEFT,
@@ -19,14 +20,15 @@ enum ActionType {
     COLOR,
     ATTACK,
     BLOCK,
-    HEAL
+    HEAL,
+    CANCEL
 };
 
 struct InputAction {
     pb_size_t inputType{};
     const std::string deviceId{};
     int inputId{};
-    ActionType actionType{};
+    std::string actionType{};
 };
 
 struct OutputAction {
@@ -38,7 +40,7 @@ struct OutputAction {
 struct Action {
     std::string deviceId{};
     Entity* entity{};
-    ActionType actionType{};
+    std::string actionType{};
 };
 
 #endif //ROOMENGINE_INPUTACTION_H

@@ -118,6 +118,7 @@ bool RenderServiceClient::SendEvent(
 
 void RenderServiceClient::SpawnEntity(const std::string &entityId, Transform transform)
 {
+    std::cout << "Spawning Entity: " << entityId << std::endl;
     RenderEvent event;
 
     event.set_type(

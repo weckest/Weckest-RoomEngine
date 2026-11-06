@@ -10,7 +10,7 @@ class World;
 
 class RoomEventCooldownSystem {
 public:
-    void update(World& world);
+    void update(World& world, float dt);
 };
 
 

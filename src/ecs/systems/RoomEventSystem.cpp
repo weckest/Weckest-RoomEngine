@@ -16,8 +16,8 @@ RoomEventSystem::RoomEventSystem(World &world) {
             const auto& input = static_cast<const ActionEvent&>(e);
 
             for (std::pair<const std::string, RoomEvent>& kvp : world.getRoomEventManager().getRoomEvents()) {
-                std::cout << "Adding action: " << input.action->actionType << std::endl;
                 if (kvp.second.ready) {
+                    // std::cout << "Adding action: " << input.action->actionType << std::endl;
                     kvp.second.actions.push_back(*input.action);
                 }
             }
@@ -28,9 +28,11 @@ void RoomEventSystem::update(World &world, float dt) {
     for (std::pair<const std::string, RoomEvent>& kvp : world.getRoomEventManager().getRoomEvents()) {
         RoomEvent& roomEvent = kvp.second;
 
+        if (!kvp.second.ready) continue;
+
         std::vector<bool> flags;
 
-        for (ActionType& requirement : roomEvent.requirements) {
+        for (std::string& requirement : roomEvent.requirements) {
             bool found = false;
             for (Action& action : roomEvent.actions) {
                 if (action.actionType == requirement) {
@@ -51,12 +53,14 @@ void RoomEventSystem::update(World &world, float dt) {
         }
 
         if (foundAll) {
-            std::cout << "Requirements met" << std::endl;
+            std::cout << "Requirements met for Room Event: " << roomEvent.name << std::endl;
 
             //start Room Event cooldown
             roomEvent.ready = false;
             roomEvent.currentCooldown = roomEvent.cooldown;
 
+            //turn the light off (can be removed in the future)
+            //should in theory be a system that can do this
             auto& module = world.getPlayer()->getComponent<Module>();
 
             ModuleMessage message = ModuleMessage_init_zero;
@@ -70,8 +74,17 @@ void RoomEventSystem::update(World &world, float dt) {
 
             //shared action context
             ActionContext context{};
+            for (auto& entity : world.getEntities()) {
+                if (entity->hasComponent<Enemy>()) {
+                    context.target = &*entity;
+                    break;
+                }
+            }
             context.source = world.getPlayer();
-            context.target = world.getPlayer();
+
+            for (std::pair<std::string, std::string> parameter : roomEvent.parameters) {
+                context.setParameter(parameter.first, parameter.second);
+            }
 
             SystemManager& systemManager = world.getSystemManager();
             for (std::string operation : roomEvent.operations) {
@@ -80,7 +93,9 @@ void RoomEventSystem::update(World &world, float dt) {
                 bool contextGood = true;
 
                 for (std::string requirement : o.requirements) {
+                    // std::cout << requirement << std::endl;
                     if (!context.hasParameter(requirement)) {
+                        std::cout << "Missing requirement: " << requirement << std::endl;
                         contextGood = false;
                         std::cout << "Error: Operation " << operation << " missing " << requirement << std::endl;
 
@@ -103,6 +118,11 @@ void RoomEventSystem::update(World &world, float dt) {
                         break;
                     }
                 }
+            }
+
+            for (std::string output : roomEvent.outputActions) {
+                //THIS SHOULD BE UPDATED IN THE FUTURE TO USE AN ACTUAL DEVICE ID OR HAVE A SEPARATE WAY OF ADDING THESE EVENTS
+                world.getEventManager().emit(ActionEvent{new Action{"", nullptr, output}});
             }
         }
 

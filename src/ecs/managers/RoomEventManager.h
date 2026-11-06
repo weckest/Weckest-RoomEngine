@@ -24,10 +24,11 @@ public:
 
     void addRoomEvent(
         std::string name,
-        std::vector<ActionType> requirements,
+        std::vector<std::string> requirements,
         std::vector<std::string> operations,
-        std::vector<OutputAction> outputActions,
-        float cooldown = 0.0f
+        std::vector<std::string> outputActions,
+        float cooldown = 0.0f,
+        std::unordered_map<std::string, std::string> parameters = {}
         );
 
     std::unordered_map<std::string, RoomEvent>& getRoomEvents() {
@@ -37,6 +38,8 @@ public:
     RoomEvent& getRoomEvent(std::string name) {
         return roomEvents[name];
     }
+
+    void triggerRoomEvent(std::string name);
 };
 
 

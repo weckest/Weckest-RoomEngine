@@ -17,7 +17,10 @@ class Entity;
 
 class ActionContext {
 public:
+    //default will try to be the player
     std::optional<Entity*> source;
+
+    //default will try to be the enemy
     std::optional<Entity*> target;
 
     // Input values supplied when the action starts.
@@ -62,7 +65,7 @@ public:
         return std::any_cast<T>(&it->second);
     }
 
-    [[nodiscard]] bool hasParameter(const std::string& name) const
+    bool hasParameter(const std::string& name) const
     {
         auto it = parameters.find(name);
         if (it == parameters.end())
