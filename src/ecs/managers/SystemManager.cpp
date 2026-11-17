@@ -37,6 +37,10 @@ Operation* SystemManager::getOperation(std::string name) {
     return nullptr;
 }
 
+std::unordered_map<std::string, Operation> & SystemManager::getOperations() {
+    return operations;
+}
+
 std::vector<std::string> SystemManager::getOperationsThatOutput(std::string requirement) {
     std::vector<std::string> outputs;
     for (std::pair<std::string, Operation> operation : operations) {

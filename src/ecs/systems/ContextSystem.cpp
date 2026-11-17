@@ -16,5 +16,5 @@ ContextSystem::ContextSystem(World &world) {
             world.getActionManager().switchCurrentContext(*inputContext);
 
             return 1;
-    });
+    }, {"context"});
 }

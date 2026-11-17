@@ -40,54 +40,145 @@ else()
 	)
 endif()
 
-set(RENDER_PROTO
-		"${PROTOCOLS_DIR}/render.proto"
-)
+function(add_proto_library TARGET_NAME PROTO_NAME)
 
-set(RENDER_PROTO_SRC
-		"${CMAKE_CURRENT_BINARY_DIR}/render.pb.cc"
-		"${CMAKE_CURRENT_BINARY_DIR}/render.grpc.pb.cc"
-)
+	set(PROTO_FILE "${PROTOCOLS_DIR}/${PROTO_NAME}.proto")
 
-set(RENDER_PROTO_HDR
-		"${CMAKE_CURRENT_BINARY_DIR}/render.pb.h"
-		"${CMAKE_CURRENT_BINARY_DIR}/render.grpc.pb.h"
-)
+	set(PROTO_SRC
+			"${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.pb.cc"
+	)
 
-add_custom_command(
-		OUTPUT
-		${RENDER_PROTO_SRC}
-		${RENDER_PROTO_HDR}
+	set(PROTO_HDR
+			"${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.pb.h"
+	)
 
-		COMMAND protobuf::protoc
-		"--proto_path=${PROTOCOLS_DIR}"
-		"--cpp_out=${CMAKE_CURRENT_BINARY_DIR}"
-		"--grpc_out=${CMAKE_CURRENT_BINARY_DIR}"
-		"--plugin=protoc-gen-grpc=$<TARGET_FILE:gRPC::grpc_cpp_plugin>"
-		"${RENDER_PROTO}"
+	add_custom_command(
+			OUTPUT
+			${PROTO_SRC}
+			${PROTO_HDR}
 
-		DEPENDS
-		"${RENDER_PROTO}"
+			COMMAND protobuf::protoc
+			"--proto_path=${PROTOCOLS_DIR}"
+			"--cpp_out=${CMAKE_CURRENT_BINARY_DIR}"
+			"${PROTO_FILE}"
 
-		COMMENT "Generating C++ protobuf and gRPC sources"
-		VERBATIM
-)
+			DEPENDS
+			"${PROTO_FILE}"
 
-add_library(render_proto
-		${RENDER_PROTO_SRC}
-		${RENDER_PROTO_HDR}
-)
+			COMMENT "Generating C++ protobuf: ${PROTO_NAME}.proto"
+			VERBATIM
+	)
 
-target_include_directories(render_proto
+	add_library(${TARGET_NAME} STATIC
+			${PROTO_SRC}
+			${PROTO_HDR}
+	)
+
+	target_include_directories(${TARGET_NAME}
+			PUBLIC
+			"${CMAKE_CURRENT_BINARY_DIR}"
+	)
+
+	target_link_libraries(${TARGET_NAME}
+			PUBLIC
+			protobuf::libprotobuf
+	)
+
+endfunction()
+
+# Generate C++ protobuf and gRPC code
+function(add_grpc_proto_library TARGET_NAME PROTO_NAME)
+	set(PROTO_FILE "${PROTOCOLS_DIR}/${PROTO_NAME}.proto")
+
+	set(PROTO_SRC
+			"${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.pb.cc"
+			"${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.grpc.pb.cc"
+	)
+
+	set(PROTO_HDR
+			"${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.pb.h"
+			"${CMAKE_CURRENT_BINARY_DIR}/${PROTO_NAME}.grpc.pb.h"
+	)
+
+	set(PROTO_DEPENDENCIES
+			"${PROTO_FILE}"
+	)
+
+	# Add imported proto files as build dependencies.
+	if(PROTO_NAME STREQUAL "game")
+		list(APPEND PROTO_DEPENDENCIES
+				"${PROTOCOLS_DIR}/database_options.proto"
+				"${PROTOCOLS_DIR}/hardware.proto"
+		)
+	elseif(PROTO_NAME STREQUAL "roomengine")
+		list(APPEND PROTO_DEPENDENCIES
+				"${PROTOCOLS_DIR}/game.proto"
+		)
+	endif()
+
+	add_custom_command(
+			OUTPUT ${PROTO_SRC} ${PROTO_HDR}
+
+			COMMAND protobuf::protoc
+			"--proto_path=${PROTOCOLS_DIR}"
+			"--cpp_out=${CMAKE_CURRENT_BINARY_DIR}"
+			"--grpc_out=${CMAKE_CURRENT_BINARY_DIR}"
+			"--plugin=protoc-gen-grpc=$<TARGET_FILE:gRPC::grpc_cpp_plugin>"
+			"${PROTO_FILE}"
+
+			DEPENDS ${PROTO_DEPENDENCIES}
+
+			COMMENT "Generating C++ protobuf/gRPC: ${PROTO_NAME}.proto"
+			VERBATIM
+	)
+
+	add_library(${TARGET_NAME} STATIC ${PROTO_SRC} ${PROTO_HDR})
+
+	target_include_directories(${TARGET_NAME}
+			PUBLIC "${CMAKE_CURRENT_BINARY_DIR}"
+	)
+
+	target_link_libraries(${TARGET_NAME}
+			PUBLIC protobuf::libprotobuf gRPC::grpc++
+	)
+endfunction()
+
+# Generate protocol libraries
+add_proto_library(database_options_proto database_options)
+#add_proto_library(hardware_proto hardware)
+
+
+add_grpc_proto_library(render_proto render)
+add_grpc_proto_library(game_proto game)
+add_grpc_proto_library(roomengine_proto roomengine)
+
+# roomengine.proto imports game.proto
+target_link_libraries(roomengine_proto
 		PUBLIC
-		"${CMAKE_CURRENT_BINARY_DIR}"
+		game_proto
 )
 
-target_link_libraries(render_proto
+target_link_libraries(game_proto
 		PUBLIC
-		protobuf::libprotobuf
-		gRPC::grpc++
+		database_options_proto
+#		hardware_proto
 )
+
+#add_library(render_proto
+#		${RENDER_PROTO_SRC}
+#		${RENDER_PROTO_HDR}
+#)
+
+#target_include_directories(render_proto
+#		PUBLIC
+#		"${CMAKE_CURRENT_BINARY_DIR}"
+#)
+
+#target_link_libraries(render_proto
+#		PUBLIC
+#		protobuf::libprotobuf
+#		gRPC::grpc++
+#)
 
 add_custom_target(generate_proto ALL
 		COMMAND "${Python3_EXECUTABLE}" "${PROTO_GENERATOR}"
@@ -127,6 +218,8 @@ add_executable(RoomEngine
 		src/ecs/systems/ContextSystem.cpp
 		src/ecs/systems/BlockSystem.cpp
 		src/ecs/systems/EnemySystem.cpp
+		src/services/RoomEngineService.cpp
+		src/ecs/systems/TestSystem.cpp
 )
 
 add_dependencies(RoomEngine generate_proto)
@@ -141,6 +234,7 @@ target_include_directories(RoomEngine
 target_link_libraries(RoomEngine
 		PRIVATE
 		render_proto
+		roomengine_proto
 )
 
 if(WIN32)

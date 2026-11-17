@@ -9,10 +9,10 @@
 
 struct InputAction;
 
-class InputActionContext {
-public:
-    std::string name;
-    std::vector<InputAction> actions;
-};
+// class InputActionContext {
+// public:
+//     std::string name;
+//     std::vector<InputAction> actions;
+// };
 
 #endif //ROOMENGINE_INPUTACTIONCONTEXT_H

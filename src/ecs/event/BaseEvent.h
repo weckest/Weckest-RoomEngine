@@ -4,7 +4,7 @@
 
 #ifndef ROOMENGINE_BASEEVENT_H
 #define ROOMENGINE_BASEEVENT_H
-#include "data/Actions.h"
+#include "utils/ProtoAlias.h"
 
 class Entity;
 

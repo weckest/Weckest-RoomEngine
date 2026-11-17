@@ -10,6 +10,10 @@ output_dir = project_dir / "src" / "generated" / "grpc"
 
 PROTO_FILES = [
     "render.proto",
+    "roomengine.proto",
+    "game.proto",
+    "database_options.proto",
+    # "hardware.proto"
 ]
 
 # Change these paths to wherever protoc and grpc_cpp_plugin are installed.

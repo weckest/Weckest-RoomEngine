@@ -26,7 +26,6 @@ public:
 
     void OnModuleConnected(const ModuleMessage& message, int clientSocket);
 
-    void HandleOutput(OutputAction& outputAction);
 
 private:
     void HandleHeartbeat(

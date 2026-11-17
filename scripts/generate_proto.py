@@ -52,6 +52,7 @@ for proto_name in PROTO_FILES:
         [
             sys.executable,
             str(nanopb_generator),
+            "-v",
             "-I",
             str(PROTO_DIR),
             "-D",

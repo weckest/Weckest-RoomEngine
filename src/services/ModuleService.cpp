@@ -60,26 +60,26 @@ void ModuleService::OnModuleConnected(const ModuleMessage& message, int clientSo
     SendModuleSetup(message.device_id, clientSocket);
 }
 
-void ModuleService::HandleOutput(OutputAction &outputAction) {
-    ModuleMessage output = ModuleMessage_init_zero;
-
-    std::strcpy(output.device_id, outputAction.deviceId.c_str());
-
-    output.which_payload = ModuleMessage_set_led_tag;
-    output.payload.set_led.led_id = outputAction.outputId;
-    auto& entities = g_engine->getWorld().getEntities();
-    for (auto& e : entities) {
-        if (!e->hasComponent<Hardware>() && !e->hasComponent<Module>()) continue;
-
-        auto& module = e->getComponent<Module>();
-        if (module.deviceId != outputAction.deviceId) continue;
-        auto& hardware = e->getComponent<Hardware>();
-
-        output.payload.set_led.state = hardware.lights.at(outputAction.outputId).state;
-        sender.Send(module.tcpConnection->GetSocket(), output);
-        return;
-    }
-}
+// void ModuleService::HandleOutput(OutputAction &outputAction) {
+//     ModuleMessage output = ModuleMessage_init_zero;
+//
+//     std::strcpy(output.device_id, outputAction.deviceId.c_str());
+//
+//     output.which_payload = ModuleMessage_set_led_tag;
+//     output.payload.set_led.led_id = outputAction.outputId;
+//     auto& entities = g_engine->getWorld().getEntities();
+//     for (auto& e : entities) {
+//         if (!e->hasComponent<Hardware>() && !e->hasComponent<Module>()) continue;
+//
+//         auto& module = e->getComponent<Module>();
+//         if (module.deviceId != outputAction.deviceId) continue;
+//         auto& hardware = e->getComponent<Hardware>();
+//
+//         output.payload.set_led.state = hardware.lights.at(outputAction.outputId).state;
+//         sender.Send(module.tcpConnection->GetSocket(), output);
+//         return;
+//     }
+// }
 
 void ModuleService::HandleHeartbeat(
     const ModuleMessage& message,

@@ -10,8 +10,8 @@ void RoomEventCooldownSystem::update(World &world, float dt) {
     auto& events = world.getRoomEventManager().getRoomEvents();
 
     for (auto& event : events) {
-        if (!event.second.ready && event.second.currentCooldown <= 0) {
-            event.second.ready = true;
+        if (!event.ready() && event.currentcooldown() <= 0) {
+            event.set_ready(true);
 
             // auto& module = world.getPlayer()->getComponent<Module>();
             //
@@ -24,7 +24,7 @@ void RoomEventCooldownSystem::update(World &world, float dt) {
             //
             // module.tcpConnection->Send(message);
         } else {
-            event.second.currentCooldown -= dt;
+            event.set_currentcooldown(event.currentcooldown() - dt);
         }
     }
 }

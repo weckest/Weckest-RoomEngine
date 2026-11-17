@@ -8,15 +8,16 @@
 #include <unordered_map>
 #include <vector>
 
+#include "game.pb.h"
 #include "data/RoomEvent.h"
-
+#include "utils/ProtoAlias.h"
 
 
 class World;
 enum class EventType;
 
 class RoomEventManager {
-    std::unordered_map<std::string, RoomEvent> roomEvents;
+    std::vector<RoomEvent> roomEvents;
     World& world;
 
 public:
@@ -24,20 +25,22 @@ public:
 
     void addRoomEvent(
         std::string name,
-        std::vector<std::string> requirements,
-        std::vector<std::string> operations,
-        std::vector<std::string> outputActions,
+        std::vector<Action> requirements,
+        std::vector<System> operations,
+        std::vector<Output> outputActions,
         float cooldown = 0.0f,
-        std::unordered_map<std::string, std::string> parameters = {}
+        std::vector<Parameter> parameters = {}
         );
 
-    std::unordered_map<std::string, RoomEvent>& getRoomEvents() {
+    RoomEvent* addRoomEvent(std::string name);
+
+    void addRoomEvent(RoomEvent* roomEvent);
+
+    std::vector<RoomEvent>& getRoomEvents() {
         return roomEvents;
     }
 
-    RoomEvent& getRoomEvent(std::string name) {
-        return roomEvents[name];
-    }
+   RoomEvent* getRoomEvent(std::string name);
 
     void triggerRoomEvent(std::string name);
 };

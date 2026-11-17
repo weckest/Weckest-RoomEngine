@@ -27,6 +27,8 @@ public:
 
     Operation* getOperation(std::string name);
 
+    std::unordered_map<std::string, Operation>& getOperations();
+
     std::vector<std::string> getOperationsThatOutput(std::string requirement);
 };
 

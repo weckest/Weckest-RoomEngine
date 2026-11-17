@@ -9,16 +9,16 @@
 
 #include "Actions.h"
 
-struct RoomEvent {
-    std::string name;
-    std::vector<Action> actions;
-    std::vector<std::string> requirements;
-    std::vector<std::string> operations;
-    std::vector<std::string> outputActions;
-    std::unordered_map<std::string, std::string> parameters;
-    bool ready;
-    float cooldown;
-    float currentCooldown;
-};
+// struct RoomEvent {
+//     std::string name;
+//     std::vector<Action> actions;
+//     std::vector<std::string> requirements;
+//     std::vector<std::string> operations;
+//     std::vector<std::string> outputActions;
+//     std::unordered_map<std::string, std::string> parameters;
+//     bool ready;
+//     float cooldown;
+//     float currentCooldown;
+// };
 
 #endif //ROOMENGINE_ROOMEVENT_H

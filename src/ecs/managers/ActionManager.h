@@ -8,14 +8,12 @@
 #include <vector>
 
 #include "hardware.pb.h"
-#include "data/Actions.h"
-#include "data/InputActionContext.h"
-
+#include "utils/ProtoAlias.h"
 
 class World;
 
 class ActionManager {
-    std::unordered_map<std::string, InputActionContext> inputActionContexts;
+    std::vector<InputActionContext> inputActionContexts;
     InputActionContext* currentInputActionContext;
     World& world;
 
@@ -23,12 +21,17 @@ public:
     ActionManager(World& world);
     void handleAction(const ModuleMessage& message);
 
-    void addAction(pb_size_t messageType, const std::string &deviceId, int inputId, std::string actionType);
+    // void addAction(pb_size_t messageType, const std::string &deviceId, int inputId, std::string actionType, std::string contextName = "base");
+
     void addActionContext(InputActionContext inputActioContext);
 
     void switchCurrentContext(std::string contextName);
 
     InputActionContext* getCurrentContext();
+
+    std::vector<InputActionContext>& getInputActionContexts();
+
+    Action* getAction(Action* requirement);
 };
 
 

@@ -5,9 +5,7 @@
 #pragma once
 
 #include <chrono>
-#include <cstdint>
 #include <vector>
-#include <cstddef>
 
 #include "hardware.pb.h"
 

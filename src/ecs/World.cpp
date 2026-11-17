@@ -8,6 +8,32 @@
 World::World(TcpServer &tcpServer) : tcpServer(tcpServer) {
     renderService = new RenderServiceClient(grpc::CreateChannel("127.0.0.1:5002", grpc::InsecureChannelCredentials()));
     renderService->Connect();
+
+    gameService = new weckest::game::GameService::Stub(grpc::CreateChannel("127.0.0.1:5097", grpc::InsecureChannelCredentials()));
+
+    roomEngineService = new RoomEngineService(*this);
+    roomEngineService->start();
+
+    // roomEventManager.addRoomEvent("Example", {"Example.Requirement"}, {
+    //     "context.switch"
+    // }, {}, 0.0f, {
+    //     {"context", "base"}
+    // });
+
+
+    RoomEvents roomEvents;
+    grpc::ClientContext context;
+
+    grpc::Status status = gameService->GetRoomEvents(&context, {}, &roomEvents);
+
+    for (auto e : roomEvents.events()) {
+        roomEventManager.addRoomEvent(&e);
+    }
+}
+
+World::~World() {
+    roomEngineService->stop();
+    renderService->Disconnect();
 }
 
 void World::createModule(TcpConnection &connection, std::string deviceId) {
@@ -64,7 +90,7 @@ void World::createModule(TcpConnection &connection, std::string deviceId) {
 
     std::cout << "Creating input action" << std::endl;
     //on/off
-    //Top
+    //Select
     moduleManager.addInput(module.deviceId, 18, 1);
     //Bottom
     // moduleManager.addInput(module.deviceId, 4, 2);
@@ -91,37 +117,37 @@ void World::createModule(TcpConnection &connection, std::string deviceId) {
     // actionManager.addAction(InputMessage_button_pressed_tag, module.deviceId, 6, "Move.Right.Start");
     // actionManager.addAction(InputMessage_button_released_tag, module.deviceId, 6, "Move.Right.Stop");
 
-    actionManager.addAction(InputMessage_button_pressed_tag, module.deviceId, 3, "Switch.Attack");
-    actionManager.addAction(InputMessage_button_pressed_tag, module.deviceId, 4, "Switch.Heal");
-    actionManager.addAction(InputMessage_button_pressed_tag, module.deviceId, 5, "Block");
+    // actionManager.addAction(weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 3, "Switch.Attack");
+    // actionManager.addAction(weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 4, "Switch.Heal");
+    // actionManager.addAction(weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 5, "Block");
     // actionManager.addAction(InputMessage_button_pressed_tag, module.deviceId, 2, HEAL);
 
     actionManager.switchCurrentContext("base");
 
 
     //Context Switching
-    roomEventManager.addRoomEvent("Base Context", {"Return.Base"}, {
-        "context.switch"
-    }, {}, 0.0f, {
-        {"context", "base"}
-    });
-
-    roomEventManager.addRoomEvent("Combat Context", {"Switch.Attack"}, {
-        "context.switch"
-    }, {}, 0.0f, {
-        {"context", "combat"}
-    });
-
-    roomEventManager.addRoomEvent("Heal Context", {"Switch.Heal"}, {
-        "context.switch"
-    }, {}, 20.0f, {
-        {"context", "heal"}
-    });
+    // roomEventManager.addRoomEvent("Base Context", {"Return.Base"}, {
+    //     "context.switch"
+    // }, {}, 0.0f, {
+    //     {"context", "base"}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Combat Context", {"Switch.Attack"}, {
+    //     "context.switch"
+    // }, {}, 0.0f, {
+    //     {"context", "combat"}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Heal Context", {"Switch.Heal"}, {
+    //     "context.switch"
+    // }, {}, 20.0f, {
+    //     {"context", "heal"}
+    // });
 
     //Base Room Events
-    roomEventManager.addRoomEvent("Block", {"Block"}, {
-        "block"
-    }, {}, 0.0f);
+    // roomEventManager.addRoomEvent("Block", {"Block"}, {
+    //    //     "block"
+    //    // }, {}, 0.0f);
 
     //Combat Room Events
     setupBattleAttackInputs(module);
@@ -134,31 +160,31 @@ void World::createModule(TcpConnection &connection, std::string deviceId) {
     actionManager.switchCurrentContext("menu");
 
     //Entity Spawning Room Events
-    roomEventManager.addRoomEvent("Spawn Enemy", {"Spawn.Enemy"}, {
-        "spawn.entity"
-    }, {}, 0.0f, {
-            {"entity.tag", eTag.tag}
-    });
-
-    roomEventManager.addRoomEvent("Spawn Player", {"Spawn.Player"}, {
-        "spawn.entity"
-    }, {}, 0.0f, {
-            {"entity.tag", pTag.tag}
-    });
-
-    roomEventManager.addRoomEvent("Spawn Win", {"NOTHING"}, {
-        "spawn.entity"
-    }, {}, 0.0f, {
-            {"entity.tag", "Win"}
-    });
+    // roomEventManager.addRoomEvent("Spawn Enemy", {"Spawn.Enemy"}, {
+    //     "spawn.entity"
+    // }, {}, 0.0f, {
+    //         {"entity.tag", eTag.tag}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Spawn Player", {"Spawn.Player"}, {
+    //     "spawn.entity"
+    // }, {}, 0.0f, {
+    //         {"entity.tag", pTag.tag}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Spawn Win", {"NOTHING"}, {
+    //     "spawn.entity"
+    // }, {}, 0.0f, {
+    //         {"entity.tag", "Win"}
+    // });
 
     //Enemy Room Events
-    roomEventManager.addRoomEvent("Enemy Attack", {}, {
-        "enemy.ai.attack",
-        "health.update"
-    }, {}, 10.0f, {
-        {"player.tag",pTag.tag}
-    });
+    // roomEventManager.addRoomEvent("Enemy Attack", {}, {
+    //     "enemy.ai.attack",
+    //     "health.update"
+    // }, {}, 10.0f, {
+    //     {"player.tag",pTag.tag}
+    // });
 
     //Scene Switch Room Events
 
@@ -230,128 +256,134 @@ void World::removeModule(TcpConnection &connection, std::string deviceId) {
 
 void World::setupMenuInputs(Module &module) {
 
-    actionManager.addActionContext({"menu", {
-        {InputMessage_button_pressed_tag, module.deviceId, 3, "Menu.Attack"},
-        {InputMessage_button_pressed_tag, module.deviceId, 4, "Menu.Heal"},
-        {InputMessage_button_pressed_tag, module.deviceId, 5, "Menu.Block"},
-        {InputMessage_button_pressed_tag, module.deviceId, 6, "Menu.Blank"},
-        {InputMessage_button_pressed_tag, module.deviceId, 1, "Menu.Return"}
-    }});
+    // actionManager.addActionContext({"menu", {
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 3, "Menu.Attack"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 4, "Menu.Heal"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 5, "Menu.Block"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 6, "Menu.Blank"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 1, "Menu.Return"}
+    // }});
+    //
+    // actionManager.addActionContext({"menu-start", {
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 3, "Menu.Attack"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 4, "Menu.Heal"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 5, "Menu.Block"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 6, "Menu.Blank"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 1, "Scene.Battle"}
+    // }});
 
-    actionManager.addActionContext({"menu-start", {
-        {InputMessage_button_pressed_tag, module.deviceId, 3, "Menu.Attack"},
-        {InputMessage_button_pressed_tag, module.deviceId, 4, "Menu.Heal"},
-        {InputMessage_button_pressed_tag, module.deviceId, 5, "Menu.Block"},
-        {InputMessage_button_pressed_tag, module.deviceId, 6, "Menu.Blank"},
-        {InputMessage_button_pressed_tag, module.deviceId, 1, "Scene.Battle"}
-    }});
-
-    roomEventManager.addRoomEvent("Render Input Actions", {"NOTHING"}, {
-    "render.actions"
-    }, {}, 0.0f);
-
-    roomEventManager.triggerRoomEvent("Render Input Actions");
-
-    roomEventManager.addRoomEvent("Switch to Battle Scene", {"Scene.Battle"}, {
-        "scene.switch"
-    }, {"Spawn.Enemy", "Spawn.Player", "Return.Base"}, 0.0f, {
-            {"sceneName", "Main"}
-    });
-
-    roomEventManager.addRoomEvent("Menu Attack", {"Menu.Attack"}, {
-        "render.text"
-    }, {}, 0.0f, {
-            {"text", "This lets you select the attack you wish to perform. Either the top button for a light attack or the bottom button for a heavy attack."}
-    });
-
-    roomEventManager.addRoomEvent("Menu Heal", {"Menu.Heal"}, {
-        "render.text"
-    }, {}, 0.0f, {
-            {"text", "This lets you select the player you which to heal using the 4 buttons in the diamond pattern."}
-    });
-
-    roomEventManager.addRoomEvent("Menu Block", {"Menu.Block"}, {
-        "render.text"
-    }, {}, 0.0f, {
-            {"text", "This lets you block the next attack within 2 seconds (NOT IMPLEMENTED)"}
-    });
-
-    roomEventManager.addRoomEvent("Menu Blank", {"Menu.Blank"}, {
-        "render.text"
-    }, {}, 0.0f, {
-            {"text", "This button does not do anything in the current context. but action selections may use this button. (Healing, Attacking)"}
-    });
-
-    roomEventManager.addRoomEvent("Menu Return", {"Menu.Return"}, {
-        "render.text",
-        "context.switch",
-        "render.actions"
-    }, {}, 0.0f, {
-            {"text", "This lets you return to the main button layout from any action selection you might be doing. (Healing, Attacking) \n "
-                     "THE NEXT TIME THIS BUTTON IS PRESSED THE GAME WILL START"},
-        {"context", "menu-start"}
-    });
+    // roomEventManager.addRoomEvent("Render Input Actions", {"NOTHING"}, {
+    // "render.actions"
+    // }, {}, 0.0f);
+    //
+    // roomEventManager.triggerRoomEvent("Render Input Actions");
+    //
+    // roomEventManager.addRoomEvent("Switch to Battle Scene", {"Scene.Battle"}, {
+    //     "scene.switch"
+    // }, {"Spawn.Enemy", "Spawn.Player", "Return.Base"}, 0.0f, {
+    //         {"sceneName", "Main"}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Menu Attack", {"Menu.Attack"}, {
+    //     "render.text"
+    // }, {}, 0.0f, {
+    //         {"text", "This lets you select the attack you wish to perform. Either the top button for a light attack or the bottom button for a heavy attack."}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Menu Heal", {"Menu.Heal"}, {
+    //     "render.text"
+    // }, {}, 0.0f, {
+    //         {"text", "This lets you select the player you which to heal using the 4 buttons in the diamond pattern."}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Menu Block", {"Menu.Block"}, {
+    //     "render.text"
+    // }, {}, 0.0f, {
+    //         {"text", "This lets you block the next attack within 2 seconds (NOT IMPLEMENTED)"}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Menu Blank", {"Menu.Blank"}, {
+    //     "render.text"
+    // }, {}, 0.0f, {
+    //         {"text", "This button does not do anything in the current context. but action selections may use this button. (Healing, Attacking)"}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Menu Return", {"Menu.Return"}, {
+    //     "render.text",
+    //     "context.switch",
+    //     "render.actions"
+    // }, {}, 0.0f, {
+    //         {"text", "This lets you return to the main button layout from any action selection you might be doing. (Healing, Attacking) \n "
+    //                  "THE NEXT TIME THIS BUTTON IS PRESSED THE GAME WILL START"},
+    //     {"context", "menu-start"}
+    // });
 
 }
 
 void World::setupBattleAttackInputs(Module& module) {
-    actionManager.addActionContext({"combat", {
-        {InputMessage_button_pressed_tag, module.deviceId, 3, "Combat.Attack.Normal"},
-        {InputMessage_button_pressed_tag, module.deviceId, 4, "Combat.Attack.Large"},
-        {InputMessage_button_pressed_tag, module.deviceId, 1, "Return.Base"}
-    }});
+    // actionManager.addActionContext({"combat", {
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 3, "Combat.Attack.Normal"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 4, "Combat.Attack.Large"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 1, "Return.Base"}
+    // }});
 
-    roomEventManager.addRoomEvent("Attack Normal", {"Combat.Attack.Normal"}, {
-        "combat.attack.calculate",
-        "combat.attack.apply",
-        "health.update"
-    }, {"Return.Base"}, 5.0f, {
-        {"player.tag", "skeleton_minion"}
-    });
-
-    roomEventManager.addRoomEvent("Attack Large", {"Combat.Attack.Large"}, {
-        "combat.attack.calculate",
-        "combat.attack.large",
-        "health.update"
-    }, {"Return.Base"}, 20.0f, {
-        {"player.tag", "skeleton_minion"}
-    });
+    // roomEventManager.addRoomEvent("Attack Normal", {"Combat.Attack.Normal"}, {
+    //     "combat.attack.calculate",
+    //     "combat.attack.apply",
+    //     "health.update"
+    // }, {"Return.Base"}, 5.0f, {
+    //     {"player.tag", "skeleton_minion"}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Attack Large", {"Combat.Attack.Large"}, {
+    //     "combat.attack.calculate",
+    //     "combat.attack.large",
+    //     "health.update"
+    // }, {"Return.Base"}, 20.0f, {
+    //     {"player.tag", "skeleton_minion"}
+    // });
 }
 
 void World::setupBattleHealInputs(Module &module) {
-    actionManager.addActionContext({"heal", {
-        {InputMessage_button_pressed_tag, module.deviceId, 3, "Heal.Player1"},
-        {InputMessage_button_pressed_tag, module.deviceId, 4, "Heal.Player2"},
-        {InputMessage_button_pressed_tag, module.deviceId, 5, "Heal.Player3"},
-        {InputMessage_button_pressed_tag, module.deviceId, 6, "Heal.Player4"},
-        {InputMessage_button_pressed_tag, module.deviceId, 1, "Return.Base"}
-    }});
+    // InputActionContext inputActionContext;
+    // inputActionContext.set_name("heal");
+    // auto healp1 = inputActionContext.add_actions();
+    // auto input = healp1->message().input_message();
+    // input.set_inputid(3);
+    // healp1->action().
+    // actionManager.addActionContext({"heal", {
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 3, "Heal.Player1"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 4, "Heal.Player2"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 5, "Heal.Player3"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 6, "Heal.Player4"},
+    //     {weckest_hardware_InputMessage_button_pressed_tag, module.deviceId, 1, "Return.Base"}
+    // }});
 
-    roomEventManager.addRoomEvent("Heal Player 1", {"Heal.Player1"}, {
-        "health.heal",
-        "health.update"
-    }, {"Return.Base"}, 0.0f, {
-        {"player.tag", "player1"}
-    });
-
-    roomEventManager.addRoomEvent("Heal Player 2", {"Heal.Player2"}, {
-        "health.heal",
-        "health.update"
-    }, {"Return.Base"}, 0.0f, {
-        {"player.tag", "player1"}
-    });
-
-    roomEventManager.addRoomEvent("Heal Player 3", {"Heal.Player3"}, {
-        "health.heal",
-        "health.update"
-    }, {"Return.Base"}, 0.0f, {
-        {"player.tag", "player1"}
-    });
-
-    roomEventManager.addRoomEvent("Heal Player 4", {"Heal.Player4"}, {
-        "health.heal",
-        "health.update"
-    }, {"Return.Base"}, 0.0f, {
-        {"player.tag", "player1"}
-    });
+    // roomEventManager.addRoomEvent("Heal Player 1", {"Heal.Player1"}, {
+    //     "health.heal",
+    //     "health.update"
+    // }, {"Return.Base"}, 0.0f, {
+    //     {"player.tag", "player1"}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Heal Player 2", {"Heal.Player2"}, {
+    //     "health.heal",
+    //     "health.update"
+    // }, {"Return.Base"}, 0.0f, {
+    //     {"player.tag", "player1"}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Heal Player 3", {"Heal.Player3"}, {
+    //     "health.heal",
+    //     "health.update"
+    // }, {"Return.Base"}, 0.0f, {
+    //     {"player.tag", "player1"}
+    // });
+    //
+    // roomEventManager.addRoomEvent("Heal Player 4", {"Heal.Player4"}, {
+    //     "health.heal",
+    //     "health.update"
+    // }, {"Return.Base"}, 0.0f, {
+    //     {"player.tag", "player1"}
+    // });
 }

@@ -10,15 +10,17 @@
 ActionManager::ActionManager(World &world) : world(world) {}
 
 void ActionManager::handleAction(const ModuleMessage &message) {
-    for (auto& ia : currentInputActionContext->actions) {
+    for (auto& ia : currentInputActionContext->actions()) {
         // std::cout << message.device_id << ", " << ia.deviceId << std::endl;
         // std::cout << message.which_payload << ", " << ia.inputType << std::endl;
         // std::cout << message.payload.input_message.inputId << ", " << ia.inputId << std::endl;
-        if (message.device_id == ia.deviceId) {
+        if (message.device_id == ia.deviceid()) {
             if (message.which_payload == ModuleMessage_input_message_tag) {
-                if (message.payload.input_message.which_input == ia.inputType) {
-                    if (message.payload.input_message.inputId == ia.inputId) {
-                        world.getEventManager().emit(ActionEvent{new Action{message.device_id, nullptr, ia.actionType}});
+                if (message.payload.input_message.which_input == ia.inputevent()) {
+                    if (message.payload.input_message.inputId == ia.inputid()) {
+                        Action action;
+                        action.CopyFrom(ia.action());
+                        world.getEventManager().emit(ActionEvent{&action});
                     }
                 }
             }
@@ -26,28 +28,51 @@ void ActionManager::handleAction(const ModuleMessage &message) {
     }
 }
 
-void ActionManager::addAction(pb_size_t messageType, const std::string &deviceId, int inputId, std::string actionType) {
-    auto context = inputActionContexts.find("base");
-    if (context != inputActionContexts.end()) {
-        context->second.actions.push_back({messageType, deviceId, inputId, actionType});
-    } else {
-        inputActionContexts.try_emplace("base", InputActionContext{"base", {{messageType, deviceId, inputId, actionType}}});
-    }
-}
+// void ActionManager::addAction(pb_size_t messageType, const std::string &deviceId, int inputId, std::string actionType, std::string contextName) {
+//     auto context = inputActionContexts.find(contextName);
+//     if (context != inputActionContexts.end()) {
+//         context->second.actions.push_back({messageType, deviceId, inputId, actionType});
+//     } else {
+//         inputActionContexts.emplace_back(InputActionContext{"base", {{messageType, deviceId, inputId, actionType}}});
+//     }
+//
+//     for (auto inputActionContext : inputActionContexts) {
+//         if (inputActionContext.name() == contextName) {
+//             auto newAction = inputActionContext.add_actions();
+//             newAction.
+//         }
+//     }
+// }
 
 void ActionManager::addActionContext(InputActionContext inputActioContext) {
-    inputActionContexts.try_emplace(inputActioContext.name, inputActioContext);
+    inputActionContexts.emplace_back(inputActioContext);
 }
 
 void ActionManager::switchCurrentContext(std::string contextName) {
-    auto context = inputActionContexts.find(contextName);
-    if (context != inputActionContexts.end()) {
-        currentInputActionContext = &context->second;
-    } else {
-        std::cout << "Context: " << contextName << " missing" << std::endl;
+    for (auto& ia : inputActionContexts) {
+        if (ia.name() == contextName) {
+            currentInputActionContext = &ia;
+            return;
+        }
     }
+    std::cout << "Could not find input context: " << contextName << std::endl;
 }
 
 InputActionContext * ActionManager::getCurrentContext() {
     return currentInputActionContext;
+}
+
+std::vector<InputActionContext> & ActionManager::getInputActionContexts() {
+    return inputActionContexts;
+}
+
+Action * ActionManager::getAction(Action *requirement) {
+    for (auto ia : inputActionContexts) {
+        for (auto action : ia.actions()) {
+            if (requirement->name() == action.action().name()) {
+                return action.mutable_action();
+            }
+        }
+    }
+    return nullptr;
 }

@@ -58,21 +58,21 @@ RenderSystem::RenderSystem(World &world) {
             capstone::render::RenderEvent event;
             event.set_type(capstone::render::RENDER_MODULE_MAPPING);
             auto mm = event.mutable_module_mapping();
-            for (auto& action : inputContext->actions) {
-                if (action.inputId == 1) {
-                    mm->set_select(action.actionType);
+            for (auto& action : inputContext->actions()) {
+                if (action.inputid() == 1) {
+                    mm->set_select(action.action().name());
                 }
-                if (action.inputId == 3) {
-                    mm->set_top(action.actionType);
+                if (action.inputid() == 3) {
+                    mm->set_top(action.action().name());
                 }
-                if (action.inputId == 4) {
-                    mm->set_bottom(action.actionType);
+                if (action.inputid() == 4) {
+                    mm->set_bottom(action.action().name());
                 }
-                if (action.inputId == 5) {
-                    mm->set_left(action.actionType);
+                if (action.inputid() == 5) {
+                    mm->set_left(action.action().name());
                 }
-                if (action.inputId == 6) {
-                    mm->set_right(action.actionType);
+                if (action.inputid() == 6) {
+                    mm->set_right(action.action().name());
                 }
             }
 

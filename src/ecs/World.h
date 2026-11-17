@@ -9,12 +9,14 @@
 #include <vector>
 
 #include "Entity.h"
+#include "game.grpc.pb.h"
 #include "event/EventManager.h"
 #include "managers/ActionManager.h"
 #include "managers/ModuleManager.h"
 #include "managers/RoomEventManager.h"
 #include "managers/SystemManager.h"
 #include "network/TCPServer.h"
+#include "services/RoomEngineService.h"
 #include "services/visuals/RenderServiceClient.h"
 #include "systems/BlockSystem.h"
 #include "systems/ColorSystem.h"
@@ -29,6 +31,7 @@
 #include "systems/RoomEventSystem.h"
 #include "systems/SceneSystem.h"
 #include "systems/SpawnSystem.h"
+#include "systems/TestSystem.h"
 #include "systems/WaitSystem.h"
 
 
@@ -41,6 +44,8 @@ class World {
     Entity* enemy;
 
     RenderServiceClient* renderService;
+    weckest::game::GameService::Stub* gameService;
+    RoomEngineService* roomEngineService;
 
     EventManager eventManager;
     ActionManager actionManager{*this};
@@ -62,9 +67,11 @@ class World {
     ContextSystem contextSystem{*this};
     BlockSystem blockSystem{*this};
     EnemySystem enemySystem{*this};
+    TestSystem testSystem{*this};
 
 public:
     World(TcpServer& tcpServer);
+    ~World();
 
     void Update(float dt) {
         lightSystem.update(entities);

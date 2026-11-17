@@ -11,7 +11,6 @@
 #include "ecs/Entity.h"
 #include "ecs/components/Module.h"
 
-
 class LightSystem {
 public:
     void update(std::vector<std::unique_ptr<Entity>>& entities) {

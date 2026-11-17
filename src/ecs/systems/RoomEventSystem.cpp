@@ -15,27 +15,26 @@ RoomEventSystem::RoomEventSystem(World &world) {
 
             const auto& input = static_cast<const ActionEvent&>(e);
 
-            for (std::pair<const std::string, RoomEvent>& kvp : world.getRoomEventManager().getRoomEvents()) {
-                if (kvp.second.ready) {
+            for (auto roomEvent : world.getRoomEventManager().getRoomEvents()) {
+                if (roomEvent.ready()) {
                     // std::cout << "Adding action: " << input.action->actionType << std::endl;
-                    kvp.second.actions.push_back(*input.action);
+                    roomEvent.add_actions()->CopyFrom(*input.action);
                 }
             }
     });
 }
 
 void RoomEventSystem::update(World &world, float dt) {
-    for (std::pair<const std::string, RoomEvent>& kvp : world.getRoomEventManager().getRoomEvents()) {
-        RoomEvent& roomEvent = kvp.second;
+    for (auto& roomEvent : world.getRoomEventManager().getRoomEvents()) {
 
-        if (!kvp.second.ready) continue;
+        if (!roomEvent.ready()) continue;
 
         std::vector<bool> flags;
 
-        for (std::string& requirement : roomEvent.requirements) {
+        for (auto& requirement : roomEvent.requirements()) {
             bool found = false;
-            for (Action& action : roomEvent.actions) {
-                if (action.actionType == requirement) {
+            for (auto action : roomEvent.actions()) {
+                if (action.name() == requirement.name()) {
                     found = true;
                     flags.push_back(true);
                 }
@@ -53,24 +52,24 @@ void RoomEventSystem::update(World &world, float dt) {
         }
 
         if (foundAll) {
-            std::cout << "Requirements met for Room Event: " << roomEvent.name << std::endl;
+            std::cout << "Requirements met for Room Event: " << roomEvent.name() << std::endl;
 
             //start Room Event cooldown
-            roomEvent.ready = false;
-            roomEvent.currentCooldown = roomEvent.cooldown;
+            roomEvent.set_ready(false);
+            roomEvent.set_currentcooldown(roomEvent.cooldown());
 
             //turn the light off (can be removed in the future)
             //should in theory be a system that can do this
-            auto& module = world.getPlayer()->getComponent<Module>();
-
-            ModuleMessage message = ModuleMessage_init_zero;
-
-            strcpy(message.device_id, module.deviceId.c_str());
-            message.which_payload = ModuleMessage_set_led_tag;
-            message.payload.set_led.led_id = 1;
-            message.payload.set_led.state = roomEvent.ready;
-
-            module.tcpConnection->Send(message);
+            // auto& module = world.getPlayer()->getComponent<Module>();
+            //
+            // ModuleMessage message = ModuleMessage_init_zero;
+            //
+            // strcpy(message.device_id, module.deviceId.c_str());
+            // message.which_payload = ModuleMessage_set_led_tag;
+            // message.payload.set_led.led_id = 1;
+            // message.payload.set_led.state = roomEvent.ready;
+            //
+            // module.tcpConnection->Send(message);
 
             //shared action context
             ActionContext context{};
@@ -82,14 +81,14 @@ void RoomEventSystem::update(World &world, float dt) {
             }
             context.source = world.getPlayer();
 
-            for (std::pair<std::string, std::string> parameter : roomEvent.parameters) {
-                context.setParameter(parameter.first, parameter.second);
+            for (auto& parameter : roomEvent.parameters()) {
+                context.setParameter(parameter.name(), parameter.value());
             }
 
             SystemManager& systemManager = world.getSystemManager();
-            for (std::string operation : roomEvent.operations) {
+            for (auto& operation : roomEvent.operations()) {
                 //check that the context has the requirements for the operation
-                auto& o = *systemManager.getOperation(operation);
+                auto& o = *systemManager.getOperation(operation.name());
                 bool contextGood = true;
 
                 for (std::string requirement : o.requirements) {
@@ -97,7 +96,7 @@ void RoomEventSystem::update(World &world, float dt) {
                     if (!context.hasParameter(requirement)) {
                         std::cout << "Missing requirement: " << requirement << std::endl;
                         contextGood = false;
-                        std::cout << "Error: Operation " << operation << " missing " << requirement << std::endl;
+                        std::cout << "Error: Operation " << operation.name() << " missing " << requirement << std::endl;
 
                         auto ops = world.getSystemManager().getOperationsThatOutput(requirement);
 
@@ -112,20 +111,22 @@ void RoomEventSystem::update(World &world, float dt) {
                 }
 
                 if (contextGood) {
-                    int success = systemManager.getOperation(operation)->function(context, world);
+                    int success = systemManager.getOperation(operation.name())->function(context, world);
                     if (success < 0) {
-                        std::cout << "Error: Operation Failed: " << operation << " " << success << std::endl;
+                        std::cout << "Error: Operation Failed: " << operation.name() << " " << success << std::endl;
                         break;
                     }
                 }
             }
 
-            for (std::string output : roomEvent.outputActions) {
+            for (auto& output : roomEvent.outputs()) {
                 //THIS SHOULD BE UPDATED IN THE FUTURE TO USE AN ACTUAL DEVICE ID OR HAVE A SEPARATE WAY OF ADDING THESE EVENTS
-                world.getEventManager().emit(ActionEvent{new Action{"", nullptr, output}});
+                Action action;
+                action.set_name(output.value());
+                world.getEventManager().emit(ActionEvent{&action});
             }
         }
 
-        roomEvent.actions.clear();
+        roomEvent.clear_actions();
     }
 }
